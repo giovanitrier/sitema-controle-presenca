@@ -1,8 +1,8 @@
-<div class="gradient-custom min-vh-100 p-4">
-  <div class="background-glass p-4">
-    <h2 class="system-title mb-4">Funcionários</h2>
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Funcionários</h2>
 
-    <div class="table-responsive">
+    <div class="tabela">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -19,8 +19,8 @@
             <td>{{ f.setor }}</td>
             <td>{{ f.nome }}</td>
             <td>{{ f.tipo }}</td>
-            <td class="actions">
-              <div class="actions-container">
+            <td class="acoes">
+              <div class="acoes-container">
                 <button class="btn btn-primary btn-sm" (click)="editarFuncionario(f)">Editar</button>
                 <button class="btn btn-primary btn-sm" (click)="removerFuncionario(f)">Remover</button>
               </div>
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Botão de cadastrar -->
-    <div class="text-center mt-3">
+    <div class="text-left mt-3">
       <button class="btn btn-primary btn-sm" (click)="cadastrarFuncionario()">Cadastrar</button>
     </div>
   </div>

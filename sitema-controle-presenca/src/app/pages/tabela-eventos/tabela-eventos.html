@@ -1,6 +1,6 @@
-<div class="gradient-custom min-vh-100 p-4">
-  <div class="background-glass p-4">
-    <h2 class="system-title mb-4">Todos os eventos</h2>
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Todos os eventos</h2>
 
     <div class="filtro-data mb-4 d-flex align-items-center gap-2">
       <input type="date" [(ngModel)]="dataInicioFiltro" class="form-control" style="max-width: 200px;" placeholder="Data inicial">
@@ -8,7 +8,7 @@
       <button class="btn btn-primary btn-sm" (click)="filtrarEventos()">Filtrar</button>
     </div>
 
-    <div class="table-responsive">
+    <div class="tabela">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -27,8 +27,8 @@
             <td>
                 {{ evento.status }}
             </td>
-          <td class="actions">
-            <div class="actions-container">
+          <td class="acoes">
+            <div class="acoes-container">
               <button class="btn btn-primary btn-sm">Cadastrar</button>
               <button class="btn btn-primary btn-sm">Editar</button>
               <button class="btn btn-primary btn-sm">Remover</button>

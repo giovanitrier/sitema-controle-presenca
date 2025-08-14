@@ -1,6 +1,6 @@
-<div class="gradient-custom min-vh-100 p-4">
-  <div class="background-glass p-4">
-    <h2 class="system-title mb-4">Gerenciar Evento</h2>
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Gerenciar Evento</h2>
 
     <form>
       <div class="mb-3">
@@ -29,16 +29,16 @@
       </div>
     </form>
 
-    <div class="actions-container">
+    <div class="acoes-container">
 
       <button *ngIf="evento.status === ''"
               class="btn btn-primary btn-sm"
-              (click)="cadastrarOuEditar()">Cadastrar</button>
+              (click)="cadastrar()">Cadastrar</button>
 
       <ng-container *ngIf="evento.status === 'pendente'">
-        <button class="btn btn-primary btn-sm" (click)="cadastrarOuEditar()">Editar</button>
-        <button class="btn btn-primary btn-sm" (click)="removerEvento()">Remover Evento</button>
-        <button class="btn btn-primary btn-sm" (click)="iniciarEvento()">Iniciar Evento</button>
+        <button class="btn btn-primary btn-sm" (click)="editar()">Editar Evento</button>
+        <button class="btn btn-primary btn-sm" (click)="remover()">Remover Evento</button>
+        <button class="btn btn-primary btn-sm" (click)="iniciar()">Iniciar Evento</button>
       </ng-container>
 
       <ng-container *ngIf="evento.status === 'finalizado'">
@@ -47,7 +47,7 @@
       </ng-container>
 
       <ng-container *ngIf="evento.status === 'iniciado'">
-        <button class="btn btn-primary btn-sm" (click)="finalizarEvento()">Finalizar Evento</button>
+        <button class="btn btn-primary btn-sm" (click)="finalizar()">Finalizar Evento</button>
       </ng-container>
     </div>
   </div>

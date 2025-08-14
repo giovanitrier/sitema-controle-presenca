@@ -8,7 +8,7 @@ import { Evento } from '../../models/evento.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './tabela-eventos.html',
-  styleUrl: './tabela-eventos.css'
+  styleUrls: ['./tabela-eventos.css','../estiloGlobal.css']
 })
 export class TabelaEventos {
 

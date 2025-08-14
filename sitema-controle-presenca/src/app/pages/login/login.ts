@@ -8,14 +8,14 @@ import { Login } from '../../models/login.model'; //Importa a interface Login
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css','../estiloGlobal.css']
 })
 
 export class LoginComponent {
 
   login: Login = new Login();
 
-  onSubmit() {
+  logar() {
     console.log('Dados do login:', this.login);
   }
 }

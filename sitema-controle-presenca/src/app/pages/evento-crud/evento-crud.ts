@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-evento-crud',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './evento-crud.html',
-  styleUrl: './evento-crud.css'
+  styleUrls: ['../estiloGlobal.css','./evento-crud.css']
 })
 export class EventoCrud {
 
@@ -19,19 +20,23 @@ export class EventoCrud {
     status: 'finalizado',
   };
 
-  cadastrarOuEditar() {
-    console.log('Cadastrando/Atualizando evento:', this.evento);
+  cadastrar() {
+    console.log('Cadastrando', this.evento);
   }
 
-  removerEvento() {
+  editar() {
+    console.log('Editando evento', this.evento.id);
+  }
+
+  remover() {
     console.log('Removendo evento:', this.evento.id);
   }
 
-  finalizarEvento() {
+  finalizar() {
     console.log('Finalizando evento:', this.evento.id);
   }
 
-  iniciarEvento() {
+  iniciar() {
     console.log('Iniciando evento:', this.evento.id);
   }
 

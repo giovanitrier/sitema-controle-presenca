@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './tabela-funcionarios.html',
-  styleUrl: './tabela-funcionarios.css'
+  styleUrls: ['../estiloGlobal.css']
 })
 export class TabelaFuncionarios {
 

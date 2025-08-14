@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './funcionario-crud.html',
-  styleUrl: './funcionario-crud.css'
+  styleUrls: ['../estiloGlobal.css','./funcionario-crud.css']
 })
 export class FuncionarioCrud {
 
@@ -21,7 +21,7 @@ export class FuncionarioCrud {
     biometriaHash: "bdfa0acc400939819b9afc23bf462d66e57b0500"
   };
 
-  editarFuncionario() {
+  editar() {
     console.log('Editar:', this.funcionario);
   }
 
@@ -29,7 +29,7 @@ export class FuncionarioCrud {
     console.log('Remover:', this.funcionario);
   }
 
-  cadastrarFuncionario() {
+  cadastrar() {
     console.log('Cadastrar novo funcionário');
   }
 

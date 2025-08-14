@@ -1,29 +1,27 @@
-<section class="vh-100 gradient-custom">
+<section class="vh-100 fundo">
   <div class="container py-5 h-100">
     <div class="row d-flex align-items-center h-100">
 
-      <!-- Coluna esquerda: frase + logo (desktop e tablet) -->
       <div
         class="col-12 col-md-6 d-none d-md-flex flex-column align-items-center justify-content-center text-white"
       >
-        <p class="text-white-65 fst-italic mb-4 sistema-titulo">
+        <p class="text-white-65 fst-italic mb-4 titulo">
           Sistema de Controle de Presença
           via Biometria
         </p>
         <img src="logoufpr.png" alt="Logo da UFPR" class="logo" />
       </div>
 
-      <!-- Coluna direita: card de login -->
       <div class="col-12 col-md-6 d-flex justify-content-center">
         <div
-          class="card background-glass text-white"
+          class="card caixa text-white"
           style="border-radius: 1rem; width: 100%; max-width: 400px;"
         >
           <div class="card-body p-5">
 
-            <!-- Frase + logo para mobile (aparece só em telas pequenas) -->
+
             <div class="d-block d-md-none mb-3 text-center">
-              <p class="text-white-65 fst-italic mb-2 sistema-titulo">
+              <p class="text-white-65 fst-italic mb-2 titulo">
                 Sistema de Controle de Presença via Biometria
               </p>
               <img src="logoufpr.png" alt="Logo da UFPR" class="logo" />
@@ -45,7 +43,7 @@
                   type="email"
                   id="typeEmail"
                   name="email"
-                  class="form-control form-control-lg"
+                  class="entrada entrada-lg"
                   [(ngModel)]="login.email"
                   #email="ngModel"
                   required
@@ -71,7 +69,7 @@
                   id="typePasswordX"
                   [(ngModel)]="login.senha"
                   #senha="ngModel"
-                  class="form-control form-control-lg"
+                  class="entrada entrada-lg"
                   required
                 />
                 <div
@@ -93,7 +91,7 @@
                 data-mdb-ripple-init
                 class="btn btn-outline-light btn-lg px-5 w-100"
                 type="submit"
-                (click)="onSubmit()"
+                (click)="logar()"
               >
                 Login
               </button>
