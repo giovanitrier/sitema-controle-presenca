@@ -1,0 +1,54 @@
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Gerenciar Certificados</h2>
+
+<div class="campos">
+  <div class="mb-4 w-80">
+    <div class="btn-group mb-3 gap-1 align-items-center d-flex" role="group" aria-label="Tipo de Pesquisa">
+      <h6 class="titulo-campo">Pesquisar Funcionário por: </h6>
+      <input type="radio" class="btn-check" name="tipoPesquisa" id="porNome" [(ngModel)]="tipoPesquisa" value="nome" checked>
+      <label class="btn btn-outline-primary" for="porNome">Nome</label>
+      <input type="radio" class="btn-check" name="tipoPesquisa" id="porCpf" [(ngModel)]="tipoPesquisa" value="cpf">
+      <label class="btn btn-outline-primary" for="porCpf">CPF</label>
+
+      <input type="radio" class="btn-check" name="tipoPesquisa" id="porMatricula" [(ngModel)]="tipoPesquisa" value="matricula">
+      <label class="btn btn-outline-primary" for="porMatricula">Matrícula</label>
+
+      <input type="text" [(ngModel)]="valorPesquisa" class="form-control" [placeholder]="placeholderAtual()">
+      <button class="btn btn-primary btn-sm">Buscar</button>
+
+    </div>
+    <div class="filtro-data d-flex align-items-center gap-1 mt-3">
+      <h6 class="titulo-campo">Período de Busca:</h6>
+      <input type="date" [(ngModel)]="dataInicioFiltro" class="form-control">
+      <input type="date" [(ngModel)]="dataFimFiltro" class="form-control">
+      <button class="btn btn-primary btn-sm">Buscar</button>
+    </div>
+  </div>
+</div>
+
+    <div class="tabela">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evento of eventos">
+            <td >{{ evento.data}}</td>
+            <td >{{ evento.descricao }}</td>
+
+          <td class="acoes">
+            <div class="acoes-container">
+              <button class="btn btn-primary btn-sm">Download</button>
+            </div>
+          </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

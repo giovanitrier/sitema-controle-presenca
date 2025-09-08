@@ -1,0 +1,54 @@
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Gerenciar Relatórios</h2>
+
+      <div class="filtro-data mb-4 d-flex align-items-center gap-2">
+        <h6 class="titulo-campo">Período de Busca:</h6>
+        <input type="date" [(ngModel)]="dataInicioFiltro" class="form-control" style="max-width: 200px;" placeholder="Data inicial">
+        <input type="date" [(ngModel)]="dataFimFiltro" class="form-control" style="max-width: 200px;" placeholder="Data final">
+        <button class="btn btn-primary btn-sm" (click)="filtrarEventos()">Buscar</button>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+          <h6>Formato do Relatório:</h6>
+          <div class="btn-group gap-2" role="group" aria-label="Formato do Relatório">
+            <input type="radio" class="btn-check" name="formato" id="csv" autocomplete="off" checked>
+            <label class="btn btn-primary btn-sm" for="csv">CSV</label>
+            <input type="radio" class="btn-check" name="formato" id="xls" autocomplete="off">
+            <label class="btn btn-primary btn-sm" for="xls">XLS</label>
+            <input type="radio" class="btn-check" name="formato" id="pdf" autocomplete="off">
+            <label class="btn btn-primary btn-sm" for="pdf">PDF</label>
+          </div>
+      </div>
+
+
+    <div class="tabela">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evento of eventos">
+            <td >{{ evento.data}}</td>
+            <td >{{ evento.descricao }}</td>
+
+          <td class="acoes">
+            <div class="acoes-container">
+              <button class="btn btn-primary btn-sm">Download</button>
+            </div>
+          </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="acoes-container">
+      <button class="btn btn-primary btn-sm" >Gerar Relatório do Período</button>
+      <button class="btn btn-primary btn-sm" >Enviar para o PowerBI</button>
+    </div>
+
+  </div>
+</div>

@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { FuncionarioService } from './../../services/funcionario-service';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient} from '@angular/common/http';
+import { Funcionario } from '../../models/funcionario.model';
 
 @Component({
   selector: 'app-funcionario-crud',
@@ -9,28 +12,69 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './funcionario-crud.html',
   styleUrls: ['../estiloGlobal.css','./funcionario-crud.css']
 })
-export class FuncionarioCrud {
+export class FuncionarioCrud implements OnInit {
 
-  funcionario = {
-    cpf: '12136717952',
-    matricula: '00007',
-    nome: 'João Souza dos Santos',
-    setor: 'Almoxarifado',
-    tipo: 'padrão',
-    dataNascimento: '2001-01-29',
-    biometriaHash: "bdfa0acc400939819b9afc23bf462d66e57b0500"
-  };
+  funcionario: Funcionario = {
+  cpf: '',
+  matricula: '',
+  nome: '',
+  dataNascimento: '',
+  setor: '',
+  tipo: '',
+  biometriaHash: ''
+};
 
-  editar() {
-    console.log('Editar:', this.funcionario);
+  funcionarios: Funcionario[] = [];
+  constructor(private funcionarioService: FuncionarioService) {}
+
+  ngOnInit(): void {
+    this.listarFuncionarios();
   }
 
-  remover() {
-    console.log('Remover:', this.funcionario);
+  listarFuncionarios() {
+    this.funcionarioService.listarFuncionarios().subscribe({
+      next: (funcionarios) => {
+        console.log('Lista de funcionários:', funcionarios);
+      },
+      error: (error) => {
+        console.error('Erro ao listar funcionários:', error);
+      }
+    });
   }
 
   cadastrar() {
-    console.log('Cadastrar novo funcionário');
+    this.funcionarioService.cadastrar(this.funcionario).subscribe({
+      next: (funcionario) => {
+        console.log('Funcionário cadastrado com sucesso:', funcionario);
+        this.listarFuncionarios();
+  },    error: (error) => {
+        console.error('Erro ao cadastrar funcionário:', error);
+      }
+    });
+  }
+
+  editar() {
+    this.funcionarioService.editar(this.funcionario).subscribe({
+      next: (funcionario) => {
+        console.log('Funcionário editado com sucesso:', funcionario);
+        this.listarFuncionarios();
+      },
+      error: (error) => {
+        console.error('Erro ao editar funcionário:', error);
+      }
+    })
+  }
+
+  remover() {
+    this.funcionarioService.remover(Number(this.funcionario.cpf)).subscribe(
+      () => {
+        console.log('Funcionário removido com sucesso');
+        this.listarFuncionarios();
+      },
+      (error) => {
+        console.error('Erro ao remover funcionário:', error);
+      }
+    );
   }
 
   obterBiometria() {

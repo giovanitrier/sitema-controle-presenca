@@ -8,7 +8,8 @@
           <tr>
             <th>Matrícula</th>
             <th>Setor</th>
-            <th>Nome do Funcionário</th>
+            <th>CPF</th>
+            <th>Nome</th>
             <th>Tipo</th>
             <th></th>
           </tr>
@@ -16,7 +17,8 @@
         <tbody>
           <tr *ngFor="let f of funcionarios">
             <td>{{ f.matricula }}</td>
-            <td>{{ f.setor }}</td>
+            <td>{{f.setor}}</td>
+            <td>{{f.cpf}}</td>
             <td>{{ f.nome }}</td>
             <td>{{ f.tipo }}</td>
             <td class="acoes">

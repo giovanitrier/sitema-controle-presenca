@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Evento } from '../../models/evento.model';
+import { EventoService } from '../../services/evento-service';
 
 @Component({
   selector: 'app-evento-crud',
@@ -9,27 +11,66 @@ import { CommonModule } from '@angular/common';
   templateUrl: './evento-crud.html',
   styleUrls: ['../estiloGlobal.css','./evento-crud.css']
 })
-export class EventoCrud {
-
+export class EventoCrud implements OnInit {
   evento = {
-    id: '1',
-    nome: 'Teste 1',
-    data: '29/08/2025',
-    descricao: 'Teste de evento',
-    categoria: 'Reunião',
-    status: 'finalizado',
+    id: 0,
+    nome: '',
+    data: '',
+    descricao: '',
+    categoria: '',
+    status: '',
   };
 
-  cadastrar() {
-    console.log('Cadastrando', this.evento);
+  eventos: Evento[] = [];
+  constructor(private eventoService: EventoService) {}
+
+  ngOnInit(): void {
+    this.listarEventos();
   }
 
-  editar() {
-    console.log('Editando evento', this.evento.id);
+  listarEventos() {
+    this.eventoService.listarEventos().subscribe({
+      next: (eventos) => {
+        console.log('Lista de Eventos:', eventos);
+      },
+      error: (error) => {
+        console.error('Erro ao listar eventos:', error);
+      }
+    });
+  }
+
+  cadastrar(){
+      this.eventoService.cadastrar(this.evento).subscribe({
+        next: (evento) => {
+          console.log('Evento cadastrado com sucesso:', evento);
+          this.listarEventos();
+        }, error: (error) => {
+          console.error('Erro ao cadastrar evento:', error);
+
+        }
+    } );
+  }
+
+  editar(){
+    this.eventoService.editar(this.evento).subscribe({
+      next: (evento) => {
+        console.log('Evento editado com sucesso:', evento);
+        this.listarEventos();
+      }, error: (error) => {
+        console.error('Erro ao editar evento:', error);
+      }
+    });
   }
 
   remover() {
-    console.log('Removendo evento:', this.evento.id);
+    this.eventoService.remover(this.evento.id).subscribe({
+      next: () => {
+        console.log('Evento removido com sucesso');
+        this.listarEventos();
+      }, error: (error) => {
+        console.error('Erro ao remover evento:', error);
+      }
+  } );
   }
 
   finalizar() {

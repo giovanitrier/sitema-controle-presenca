@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
 export class TabelaFuncionarios {
 
     funcionarios = [
-    { matricula: '00007', setor: 'Almoxarifado', nome: 'João Souza dos Santos', tipo: 'padrão' },
-    { matricula: '00006', setor: 'EHS', nome: 'Aruni Serena Van Amstel', tipo: 'EHS' },
-    { matricula: '00005', setor: 'Financeiro', nome: 'Pedro Albuquerque de Oliveira', tipo: 'padrão' },
+    { matricula: '00007', cpf:'12345678910', setor: 'Almoxarifado', nome: 'João Souza dos Santos', tipo: 'padrão' },
+    { matricula: '00006', cpf:'12345678910', setor: 'EHS', nome: 'Giovani Trierweiler Alves', tipo: 'EHS' },
+    { matricula: '00005', cpf:'12345678910', setor: 'Financeiro', nome: 'Pedro Albuquerque de Oliveira', tipo: 'padrão' },
 
   ];
 
