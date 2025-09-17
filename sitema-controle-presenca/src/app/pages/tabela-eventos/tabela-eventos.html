@@ -2,40 +2,50 @@
   <div class="caixa p-4">
     <h2 class="titulo mb-4">Todos os eventos</h2>
 
+    <!-- Filtro de datas -->
     <div class="filtro-data mb-4 d-flex align-items-center gap-2">
-      <input type="date" [(ngModel)]="dataInicioFiltro" class="form-control" style="max-width: 200px;" placeholder="Data inicial">
-      <input type="date" [(ngModel)]="dataFimFiltro" class="form-control" style="max-width: 200px;" placeholder="Data final">
-      <button class="btn btn-primary btn-sm" (click)="filtrarEventos()">Filtrar</button>
+      <input type="date" class="form-control" style="max-width: 200px;"
+             [(ngModel)]="dataInicio" placeholder="Data inicial">
+      <input type="date" class="form-control" style="max-width: 200px;"
+             [(ngModel)]="dataFim" placeholder="Data final">
+      <button class="btn btn-primary btn-sm"
+              (click)="filtrarEventos()">Filtrar</button>
     </div>
 
+    <!-- Tabela de eventos -->
     <div class="tabela">
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>Data</th>
+            <th id="data">Data</th>
+            <th>Nome</th>
             <th>Descrição</th>
             <th>Status</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let evento of eventos">
-            <td >{{ evento.data}}</td>
-            <td >{{ evento.descricao }}</td>
-            <td >
-                {{ evento.status }}
+          <tr *ngFor="let evento of eventosFiltrados$ | async">
+            <td>{{ evento.data | date:'dd/MM/yyyy' }}</td>
+            <td>{{evento.nome}}</td>
+            <td>{{ evento.descricao }}</td>
+            <td>{{ evento.status }}</td>
+            <td class="acoes">
+              <div class="acoes-container d-flex gap-1">
+                <button class="btn btn-primary btn-sm" (click)="editar(evento)">Editar</button>
+                <button class="btn btn-danger btn-sm" (click)="remover(evento)">Remover</button>
+                <button class="btn btn-primary btn-sm" (click)="baixarRelatorio(evento)">Download</button>
+              </div>
             </td>
-          <td class="acoes">
-            <div class="acoes-container">
-              <button class="btn btn-primary btn-sm">Cadastrar</button>
-              <button class="btn btn-primary btn-sm">Editar</button>
-              <button class="btn btn-primary btn-sm">Remover</button>
-              <button class="btn btn-primary btn-sm">Download</button>
-            </div>
-          </td>
+          </tr>
+          <tr *ngIf="(eventosFiltrados$ | async)?.length === 0">
+            <td colspan="4" class="text-center">Nenhum evento encontrado</td>
           </tr>
         </tbody>
       </table>
+      <div class="text-left mt-3">
+        <button class="btn btn-primary btn-sm" (click)="cadastrar()">Cadastrar</button>
+      </div>
     </div>
   </div>
 </div>

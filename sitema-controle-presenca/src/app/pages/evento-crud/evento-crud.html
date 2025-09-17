@@ -3,10 +3,6 @@
     <h2 class="titulo mb-4">Gerenciar Evento</h2>
 
     <form>
-      <div class="mb-3">
-        <label for="id" class="form-label">ID:</label>
-        <input id="id" type="text" class="form-control" [(ngModel)]="evento.id" name="id">
-      </div>
 
       <div class="mb-3">
         <label for="nome" class="form-label">NOME</label>
@@ -27,6 +23,12 @@
         <label for="categoria" class="form-label">CATEGORIA</label>
         <input id="categoria" type="text" class="form-control" [(ngModel)]="evento.categoria" name="categoria">
       </div>
+
+      <div class="mb-4">
+        <label for="status" class="form-label">STATUS</label>
+        <input readonly id="status" type="text" class="form-control" [(ngModel)]="evento.status" name="status">
+      </div>
+
     </form>
 
     <div class="acoes-container">
@@ -35,7 +37,7 @@
               class="btn btn-primary btn-sm"
               (click)="cadastrar()">Cadastrar</button>
 
-      <ng-container *ngIf="evento.status === 'pendente'">
+      <ng-container *ngIf="evento.status === 'Pendente'">
         <button class="btn btn-primary btn-sm" (click)="editar()">Editar Evento</button>
         <button class="btn btn-primary btn-sm" (click)="remover()">Remover Evento</button>
         <button class="btn btn-primary btn-sm" (click)="iniciar()">Iniciar Evento</button>

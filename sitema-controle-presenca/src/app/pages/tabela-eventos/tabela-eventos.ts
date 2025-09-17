@@ -1,71 +1,80 @@
-import { Component } from '@angular/core'; //Define a clase como componente Angular.
-import { CommonModule } from '@angular/common'; // Importa diretivas e pipes como *ngIf, *ngFor.
-import { FormsModule } from '@angular/forms'; // Habilita o uso de formulários baseados em template, incluindo [(ngModel)] para two-way binding
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Evento } from '../../models/evento.model';
+import { EventoService } from '../../services/evento-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabela-eventos',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './tabela-eventos.html',
-  styleUrls: ['./tabela-eventos.css','../estiloGlobal.css']
+  styleUrls: ['./tabela-eventos.css', '../estiloGlobal.css']
 })
-export class TabelaEventos {
+export class TabelaEventos implements OnInit {
 
-//Teste de eventos
-eventos = [
-    { id: '00007', data: '21/02/2025', descricao: 'Treinamento Primeiros Socorros', status: 'em andamento' },
-    { id: '00006', data: '20/02/2025', descricao: 'Reunião de CIPA', status: 'finalizada' },
-    { id: '00005', data: '10/02/2025', descricao: 'Treinamento de Combate a Incêndio e Uso de Extintores', status: 'finalizada' },
-    { id: '00004', data: '08/02/2025', descricao: 'Reunião de Diálogo Diário de Segurança', status: 'cancelada' }
-  ];
+  eventosFiltrados$!: Observable<Evento[]>;
 
-  cadastrarEvento(evento: any) {
-    console.log('Cadastrar:', evento);
+  dataInicio: string = '';
+  dataFim: string = '';
+
+  constructor(private eventoService: EventoService, private router: Router) {}
+
+  ngOnInit(): void {
+    const hoje = new Date();
+    const trintaDiasFrente = new Date();
+    trintaDiasFrente.setDate(hoje.getDate() + 30);
+    this.dataInicio = hoje.toISOString().split('T')[0];
+    this.dataFim = trintaDiasFrente.toISOString().split('T')[0];
+    this.atualizarEventosFiltrados(hoje, trintaDiasFrente);
   }
 
-  editarEvento(evento: any) {
-    console.log('Editar:', evento);
+  atualizarEventosFiltrados(inicioParam?: Date, fimParam?: Date) {
+    const inicio = inicioParam ?? new Date(this.dataInicio);
+    const fim = fimParam ?? new Date(this.dataFim);
+    this.eventosFiltrados$ = this.eventoService.listarEventos().pipe(
+      map(eventos =>
+        eventos
+          .filter(e => {
+            const eventoData = new Date(e.data);
+            return eventoData >= inicio && eventoData <= fim;
+          })
+      )
+    );
   }
 
-  removerEvento(evento: any) {
-    console.log('Remover:', evento);
+  filtrarEventos() {
+    const diffMs = new Date(this.dataFim).getTime() - new Date(this.dataInicio).getTime();
+    const diffDias = diffMs / (1000 * 60 * 60 * 24);
+    if (diffDias > 30) {
+      alert('O período não pode ser maior que 30 dias!');
+      return;
+    }
+    this.atualizarEventosFiltrados();
   }
 
-  baixarRelatorio(evento: any) {
-    console.log('Baixar relatório:', evento);
+  cadastrar() { this.router.navigate(['/evento-crud']); }
+
+  editar(evento: Evento) { this.router.navigate([`/evento-crud/${evento.id}`]); }
+
+  remover(evento: Evento) {
+    if (confirm(`Confirma a remoção do evento "${evento.descricao}"?`)) {
+      this.eventoService.remover(Number(evento.id)).subscribe({
+        next: () => {
+      console.log('Evento removido com sucesso');
+      this.atualizarEventosFiltrados();
+    },
+      error: (error) => {
+          console.error('Erro ao remover evento:', error);
+          console.log('Evento:', evento);
+        }
+      });
+    }
   }
 
-dataInicioFiltro: string | null = null;
-dataFimFiltro: string | null = null;
-eventosFiltrados = [...this.eventos];
+  baixarRelatorio(evento: Evento) { console.log('Download:', evento); }
 
-filtrarEventos() {
-  if (!this.dataInicioFiltro && !this.dataFimFiltro) {
-    this.eventosFiltrados = [...this.eventos];
-    return;
-  }
-
-  const inicio = this.dataInicioFiltro ? new Date(this.dataInicioFiltro) : new Date('1970-01-01');
-  const fim = this.dataFimFiltro ? new Date(this.dataFimFiltro) : new Date('9999-12-31');
-
-  // Ajusta para o final do dia para incluir todos os eventos do dia final
-  fim.setHours(23, 59, 59, 999);
-
-  // Calcula a diferença em milissegundos
-  const diffMs = fim.getTime() - inicio.getTime();
-  const diffDias = diffMs / (1000 * 60 * 60 * 24);
-
-  if (diffDias > 30) {
-    alert('O intervalo máximo permitido para o filtro é de 30 dias.');
-    return;
-  }
-
-  this.eventosFiltrados = this.eventos.filter(evento => {
-    const dataEvento = new Date(evento.data);
-    return dataEvento >= inicio && dataEvento <= fim;
-  });
 }
-
-}
-

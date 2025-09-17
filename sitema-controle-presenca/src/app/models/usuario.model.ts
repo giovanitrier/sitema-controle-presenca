@@ -1,4 +1,4 @@
-export class Funcionario {
+export class Usuario {
   constructor(
     public cpf: string = "",
     public nome: string = "",

@@ -1,0 +1,40 @@
+<div class="fundo min-vh-100 p-4">
+  <div class="caixa p-4">
+    <h2 class="titulo mb-4">Usuários</h2>
+
+    <div class="tabela">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Matrícula</th>
+            <th>Setor</th>
+            <th>CPF</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of usuarios"> >
+            <td>{{ u.matricula }}</td>
+            <td>{{u.setor}}</td>
+            <td>{{u.cpf}}</td>
+            <td>{{ u.nome }}</td>
+            <td>{{ u.tipo }}</td>
+            <td class="acoes">
+              <div class="acoes-container">
+                <button class="btn btn-primary btn-sm" (click)="editar()">Editar</button>
+                <button class="btn btn-primary btn-sm" (click)="remover()">Remover</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="text-left mt-3">
+      <button class="btn btn-primary btn-sm" (click)="cadastrar()">Cadastrar</button>
+    </div>
+  </div>
+</div>

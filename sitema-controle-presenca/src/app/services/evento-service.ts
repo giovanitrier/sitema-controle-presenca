@@ -4,7 +4,7 @@ import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
-const API_URL = '';
+const API_URL = 'http://localhost:3000/eventos';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,10 @@ export class EventoService {
     return this.http.get<Evento[]>(API_URL);
   }
 
+  listarEventoporId(id: any): Observable<Evento> {
+    return this.http.get<Evento>(`${API_URL}/${id}`);
+  }
+
   cadastrar(Evento: Evento): Observable<Evento> {
     return this.http.post<Evento>(API_URL, Evento);
   }
@@ -26,8 +30,8 @@ export class EventoService {
     return this.http.put<Evento>(`${API_URL}/${Evento.id}`, Evento);
   }
 
-  remover(id: number): Observable<any> {
-    return this.http.delete(`${API_URL}/${id}`);
+  remover(id: any): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/${id}`);
   }
 
 }
