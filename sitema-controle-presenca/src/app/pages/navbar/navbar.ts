@@ -3,10 +3,9 @@ import { ModalLogout } from '../modal-logout/modal-logout';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [ModalLogout],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrls: ['./navbar.css']
 })
-export class Navbar {
-  
-}
+export class Navbar { }
