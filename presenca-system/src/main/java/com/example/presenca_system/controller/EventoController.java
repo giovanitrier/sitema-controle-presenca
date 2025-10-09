@@ -29,9 +29,8 @@ public class EventoController {
     private CertificadoService certificadoService;
 
     @GetMapping
-    public List<EventoDTO> getMeusEventos(Authentication authentication) {
-        String emailSuperusuario = authentication.getName();
-        return eventoService.findBySuperusuarioEmail(emailSuperusuario);
+    public List<EventoDTO> listEventos() {
+        return eventoService.findAllDTO();
     }
 
     @GetMapping("/{id}")
