@@ -33,6 +33,8 @@ public class UsuarioController {
         novoUsuario.setNome(usuarioDto.getNome());
         novoUsuario.setMatricula(usuarioDto.getMatricula());
         novoUsuario.setSetor(usuarioDto.getSetor());
+        novoUsuario.setEmail(usuarioDto.getEmail()); // <- Adicionar esta linha
+        novoUsuario.setDataNascimento(usuarioDto.getDataNascimento()); // <- Adicionar esta linha
 
         try {
             byte[] biometriaBytes = Base64.getDecoder().decode(usuarioDto.getTemplate());
@@ -44,7 +46,6 @@ public class UsuarioController {
         Usuario usuarioSalvo = usuarioService.salvarUsuario(novoUsuario);
         return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
     }
-
     @GetMapping
     public ResponseEntity<List<UsuarioListDTO>> listarTodosOsUsuarios(Authentication authentication) {
         String emailSuperusuario = authentication.getName();

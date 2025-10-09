@@ -27,7 +27,8 @@ export class UsuarioCrud implements OnInit {
     matricula: '',
     setor: '',
     template: '',
-    dataNascimento: ''
+    dataNascimento: '',
+    email: ''
   };
 
   isEditMode: boolean = false;
@@ -47,15 +48,16 @@ export class UsuarioCrud implements OnInit {
     private cd: ChangeDetectorRef
   ) {}
 
+  // == LIFECYCLE HOOKS ==
   ngOnInit(): void {
     const cpf = this.route.snapshot.paramMap.get('cpf');
-
     if (cpf) {
       this.isEditMode = true;
       this.carregarUsuario(cpf);
     }
   }
 
+  // == CARREGAMENTO DE DADOS ==
   carregarUsuario(cpf: string): void {
     this.isLoading = true;
     this.usuarioService.buscarPorCpf(cpf).subscribe({
@@ -66,7 +68,8 @@ export class UsuarioCrud implements OnInit {
           matricula: data.matricula,
           setor: data.setor || '',
           template: data.template || '',
-          dataNascimento: data.dataNascimento
+          dataNascimento: data.dataNascimento,
+          email: data.email || ''
         };
         this.isLoading = false;
         this.cd.detectChanges();
@@ -81,53 +84,29 @@ export class UsuarioCrud implements OnInit {
     });
   }
 
+  // == OPERAÇÕES PRINCIPAIS ==
   salvarUsuario(): void {
-    if (!this.validarFormulario()) {
-      return;
-    }
+    if (!this.validarFormulario()) return;
 
     this.isLoading = true;
     this.mensagem = '';
     this.erro = '';
 
-    if (this.isEditMode) {
-      this.usuarioService.atualizarUsuario(this.usuario.cpf, this.usuario).subscribe({
-        next: () => {
-          this.mensagem = 'Usuário atualizado com sucesso!';
-          this.isLoading = false;
-          this.cd.detectChanges();
-          setTimeout(() => this.navegarParaLista(), 2000);
-        },
-        error: (err) => {
-          console.error('Erro ao atualizar usuário:', err);
-          this.erro = 'Erro ao atualizar usuário.';
-          this.isLoading = false;
-          this.cd.detectChanges();
-        }
-      });
-    } else {
-      this.usuarioService.cadastrarUsuario(this.usuario).subscribe({
-        next: () => {
-          this.mensagem = 'Usuário cadastrado com sucesso!';
-          this.isLoading = false;
-          this.cd.detectChanges();
-          setTimeout(() => this.navegarParaLista(), 2000);
-        },
-        error: (err) => {
-          console.error('Erro ao cadastrar usuário:', err);
-          
-          if (err.status === 409) {
-            this.erro = 'CPF já cadastrado no sistema.';
-            this.cpfInvalido = true;
-          } else {
-            this.erro = 'Erro ao cadastrar usuário.';
-          }
-          
-          this.isLoading = false;
-          this.cd.detectChanges();
-        }
-      });
-    }
+    const operacao = this.isEditMode 
+      ? this.usuarioService.atualizarUsuario(this.usuario.cpf, this.usuario)
+      : this.usuarioService.cadastrarUsuario(this.usuario);
+
+    operacao.subscribe({
+      next: () => {
+        this.mensagem = `Usuário ${this.isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`;
+        this.isLoading = false;
+        this.cd.detectChanges();
+        setTimeout(() => this.navegarParaLista(), 2000);
+      },
+      error: (err) => {
+        this.tratarErroSalvamento(err);
+      }
+    });
   }
 
   remover(): void {
@@ -150,23 +129,27 @@ export class UsuarioCrud implements OnInit {
     }
   }
 
+  // == CAPTURA DA BIOMETRIA ==
   obterBiometria(): void {
     this.isCapturingBiometry = true;
     this.biometryError = '';
     this.cd.detectChanges();
 
+    // TODO: Substituir por chamada real da API quando disponível
+    this.capturaBiometriaSimulada();
+  }
+
+  private capturaBiometriaReal(): void {
     this.biometricService.captureHash(false).subscribe({
       next: (response) => {
         this.isCapturingBiometry = false;
-
         if (response.success) {
           this.usuario.template = response.template;
           this.mensagem = 'Biometria capturada com sucesso!';
-          this.cd.detectChanges();
         } else {
           this.biometryError = response.message || 'Falha na captura da biometria';
-          this.cd.detectChanges();
         }
+        this.cd.detectChanges();
       },
       error: (error) => {
         this.isCapturingBiometry = false;
@@ -177,8 +160,26 @@ export class UsuarioCrud implements OnInit {
     });
   }
 
+  private capturaBiometriaSimulada(): void {
+    // Simula o tempo de captura da biometria
+    setTimeout(() => {
+      this.isCapturingBiometry = false;
+      // Simula um template em Base64 (comprimento típico de um hash Base64)
+      const simulatedHash = btoa('SIMULATED_BIOMETRY_HASH_' + Date.now());
+      this.usuario.template = simulatedHash;
+      this.mensagem = 'Biometria simulada capturada com sucesso!';
+      this.cd.detectChanges();
+    }, 2000);
+  }
+
+  cancelarCapturaBiometria(): void {
+    this.isCapturingBiometry = false;
+    this.biometryError = '';
+    this.cd.detectChanges();
+  }
+
+  // == VALIDAÇÕES ==
   private validarFormulario(): boolean {
-    // Validação do CPF
     if (!this.cpfValidator.validarCPF(this.usuario.cpf)) {
       this.erro = 'CPF inválido!';
       this.cpfInvalido = true;
@@ -186,7 +187,12 @@ export class UsuarioCrud implements OnInit {
       return false;
     }
 
-    // Valida se a biometria foi cadastrada (apenas para criação)
+    if (!this.usuario.email) {
+      this.erro = 'Email é obrigatório!';
+      this.cd.detectChanges();
+      return false;
+    }
+
     if (!this.isEditMode && !this.usuario.template) {
       this.erro = 'É necessário capturar a biometria antes de salvar!';
       this.cd.detectChanges();
@@ -197,24 +203,29 @@ export class UsuarioCrud implements OnInit {
     return true;
   }
 
-  private getErrorMessage(error: any): string {
-    if (error.error && error.error.message) {
-      return error.error.message;
-    } else if (error.message) {
-      return error.message;
-    } else if (error.status === 0) {
-      return 'Erro de conexão: Serviço de biometria não está respondendo';
+  private tratarErroSalvamento(err: any): void {
+    console.error('Erro ao salvar usuário:', err);
+    
+    if (err.status === 409) {
+      this.erro = 'CPF já cadastrado no sistema.';
+      this.cpfInvalido = true;
     } else {
-      return 'Erro desconhecido ao capturar biometria';
+      this.erro = `Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} usuário.`;
     }
-  }
-
-  cancelarCapturaBiometria(): void {
-    this.isCapturingBiometry = false;
-    this.biometryError = '';
+    
+    this.isLoading = false;
     this.cd.detectChanges();
   }
 
+  // == MÉTODOS AUXILIARES ==
+  private getErrorMessage(error: any): string {
+    if (error.error?.message) return error.error.message;
+    if (error.message) return error.message;
+    if (error.status === 0) return 'Erro de conexão: Serviço de biometria não está respondendo';
+    return 'Erro desconhecido ao capturar biometria';
+  }
+
+  // == NAVEGAÇÃO ==
   navegarParaLista(): void {
     this.router.navigate(['/tabela-usuarios']);
   }

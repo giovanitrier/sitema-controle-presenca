@@ -2,7 +2,7 @@ package com.example.presenca_system.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class UsuarioDTO {
@@ -10,12 +10,11 @@ public class UsuarioDTO {
     private String nome;
     private String matricula;
     private String setor;
+    private String email;
     
-    // Mapeia o campo "template" do JSON para o atributo template do Java
     @JsonProperty("template")
     private String template;
 
-    // Mapeia o campo "dataNascimento" do JSON para o atributo dataNascimento do Java
     @JsonProperty("dataNascimento")
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 }

@@ -48,13 +48,11 @@
         Aguarde... Capturando biometria. Coloque o dedo no leitor.
       </p>
 
-      <!-- Botão para cancelar a captura -->
       <button class="btn btn-outline-danger btn-sm"
               (click)="cancelarCapturaBiometria()">
         <i class="bi bi-x-circle me-1"></i> Cancelar Captura
       </button>
 
-      <!-- Mensagem de erro durante a captura -->
       @if (biometryError) {
       <div class="alert alert-danger mt-3">
         <small>{{ biometryError }}</small>
@@ -105,6 +103,14 @@
                   placeholder="Digite o nome completo">
           </div>
 
+          <!-- Email -->
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+            <input id="email" type="email" class="form-control"
+                  [(ngModel)]="usuario.email" name="email" required
+                  placeholder="Digite o email">
+          </div>
+
           <!-- Matrícula -->
           <div class="col-md-6">
             <label for="matricula" class="form-label">Matrícula <span class="text-danger">*</span></label>
@@ -121,7 +127,7 @@
                   placeholder="Opcional">
           </div>
 
-          <!-- Biometria - Mantido como estava -->
+          <!-- Biometria -->
           <div class="col-md-6">
             <label for="biometria" class="form-label">Biometria <span class="text-danger">*</span></label>
             <div class="input-group">
@@ -136,7 +142,6 @@
             </div>
             <small class="text-muted">Clique no botão para capturar a biometria</small>
             
-            <!-- Status da biometria -->
             @if (usuario.template && !isCapturingBiometry) {
             <div class="mt-2">
               <span class="badge bg-success">
@@ -149,7 +154,6 @@
           <!-- Botões -->
           <div class="col-12">
             <div class="d-flex gap-2 justify-content-end pt-3">
-              <!-- Modo Criação -->
               @if (!isEditMode) {
               <button type="button" class="btn btn-outline-secondary"
                       (click)="cancelar()">
@@ -162,7 +166,6 @@
               </button>
               }
 
-              <!-- Modo Edição -->
               @if (isEditMode) {
               <button type="button" class="btn btn-outline-secondary"
                       (click)="cancelar()">
@@ -187,7 +190,6 @@
             </div>
           </div>
 
-          <!-- Campos obrigatórios -->
           <div class="col-12">
             <small class="text-muted">* Campos obrigatórios</small>
           </div>
