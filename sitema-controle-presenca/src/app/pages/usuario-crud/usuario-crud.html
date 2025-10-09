@@ -72,27 +72,21 @@
       <form #usuarioForm="ngForm">
         <div class="row g-3">
           
-          <!-- CPF -->
+          <!-- Matrícula -->
           <div class="col-md-6">
-            <label for="cpf" class="form-label">CPF <span class="text-danger">*</span></label>
-            <input id="cpf" type="text" class="form-control"
-                  [(ngModel)]="usuario.cpf" name="cpf"
-                  mask="000.000.000-00" required
+            <label for="matricula" class="form-label">Matrícula <span class="text-danger">*</span></label>
+            <input id="matricula" type="text" class="form-control"
+                  [(ngModel)]="usuario.matricula" name="matricula" required
                   [disabled]="isEditMode"
-                  placeholder="000.000.000-00"
-                  [class.is-invalid]="cpfInvalido">
-            @if (cpfInvalido) {
-            <div class="invalid-feedback">
-              CPF inválido.
-            </div>
-            }
+                  placeholder="Digite a matrícula">
           </div>
 
-          <!-- Data de Nascimento -->
+          <!-- Email -->
           <div class="col-md-6">
-            <label for="dataNascimento" class="form-label">Data de Nascimento <span class="text-danger">*</span></label>
-            <input id="dataNascimento" type="date" class="form-control"
-                  [(ngModel)]="usuario.dataNascimento" name="dataNascimento" required>
+            <label for="email" class="form-label">Email</label>
+            <input id="email" type="email" class="form-control"
+                  [(ngModel)]="usuario.email" name="email"
+                  placeholder="Opcional">
           </div>
 
           <!-- Nome -->
@@ -103,28 +97,12 @@
                   placeholder="Digite o nome completo">
           </div>
 
-          <!-- Email -->
-          <div class="col-md-6">
-            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-            <input id="email" type="email" class="form-control"
-                  [(ngModel)]="usuario.email" name="email" required
-                  placeholder="Digite o email">
-          </div>
-
-          <!-- Matrícula -->
-          <div class="col-md-6">
-            <label for="matricula" class="form-label">Matrícula <span class="text-danger">*</span></label>
-            <input id="matricula" type="text" class="form-control"
-                  [(ngModel)]="usuario.matricula" name="matricula" required
-                  placeholder="Digite a matrícula">
-          </div>
-
           <!-- Setor -->
           <div class="col-md-6">
-            <label for="setor" class="form-label">Setor</label>
+            <label for="setor" class="form-label">Setor <span class="text-danger">*</span></label>
             <input id="setor" type="text" class="form-control"
-                  [(ngModel)]="usuario.setor" name="setor"
-                  placeholder="Opcional">
+                  [(ngModel)]="usuario.setor" name="setor" required
+                  placeholder="Digite o setor">
           </div>
 
           <!-- Biometria -->

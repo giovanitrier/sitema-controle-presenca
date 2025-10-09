@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CpfValidatorService } from '../../servicos/cpf-validator';
 import { UsuarioService } from '../../servicos/usuario-service';
 import { BiometricService } from '../../servicos/biometric-service';
 import { Usuario } from '../../models/usuario.model';
@@ -22,12 +21,10 @@ import { Usuario } from '../../models/usuario.model';
 })
 export class UsuarioCrud implements OnInit {
   usuario: Usuario = {
-    cpf: '',
-    nome: '',
     matricula: '',
+    nome: '',
     setor: '',
     template: '',
-    dataNascimento: '',
     email: ''
   };
 
@@ -37,10 +34,8 @@ export class UsuarioCrud implements OnInit {
   mensagem: string = '';
   erro: string = '';
   biometryError: string = '';
-  cpfInvalido: boolean = false;
 
   constructor(
-    private cpfValidator: CpfValidatorService,
     private usuarioService: UsuarioService,
     private biometricService: BiometricService,
     private route: ActivatedRoute,
@@ -50,25 +45,23 @@ export class UsuarioCrud implements OnInit {
 
   // == LIFECYCLE HOOKS ==
   ngOnInit(): void {
-    const cpf = this.route.snapshot.paramMap.get('cpf');
-    if (cpf) {
+    const matricula = this.route.snapshot.paramMap.get('matricula');
+    if (matricula) {
       this.isEditMode = true;
-      this.carregarUsuario(cpf);
+      this.carregarUsuario(matricula);
     }
   }
 
   // == CARREGAMENTO DE DADOS ==
-  carregarUsuario(cpf: string): void {
+  carregarUsuario(matricula: string): void {
     this.isLoading = true;
-    this.usuarioService.buscarPorCpf(cpf).subscribe({
+    this.usuarioService.buscarPorMatricula(matricula).subscribe({
       next: (data) => {
         this.usuario = {
-          cpf: data.cpf,
-          nome: data.nome,
           matricula: data.matricula,
+          nome: data.nome,
           setor: data.setor || '',
           template: data.template || '',
-          dataNascimento: data.dataNascimento,
           email: data.email || ''
         };
         this.isLoading = false;
@@ -93,7 +86,7 @@ export class UsuarioCrud implements OnInit {
     this.erro = '';
 
     const operacao = this.isEditMode 
-      ? this.usuarioService.atualizarUsuario(this.usuario.cpf, this.usuario)
+      ? this.usuarioService.atualizarUsuario(this.usuario.matricula, this.usuario)
       : this.usuarioService.cadastrarUsuario(this.usuario);
 
     operacao.subscribe({
@@ -110,9 +103,9 @@ export class UsuarioCrud implements OnInit {
   }
 
   remover(): void {
-    if (this.usuario.cpf && confirm('Tem certeza que deseja remover este usuário?')) {
+    if (this.usuario.matricula && confirm('Tem certeza que deseja remover este usuário?')) {
       this.isLoading = true;
-      this.usuarioService.deletarUsuario(this.usuario.cpf).subscribe({
+      this.usuarioService.deletarUsuario(this.usuario.matricula).subscribe({
         next: () => {
           this.mensagem = 'Usuário removido com sucesso!';
           this.isLoading = false;
@@ -180,15 +173,14 @@ export class UsuarioCrud implements OnInit {
 
   // == VALIDAÇÕES ==
   private validarFormulario(): boolean {
-    if (!this.cpfValidator.validarCPF(this.usuario.cpf)) {
-      this.erro = 'CPF inválido!';
-      this.cpfInvalido = true;
+    if (!this.usuario.matricula) {
+      this.erro = 'Matrícula é obrigatória!';
       this.cd.detectChanges();
       return false;
     }
 
-    if (!this.usuario.email) {
-      this.erro = 'Email é obrigatório!';
+    if (!this.usuario.setor) {
+      this.erro = 'Setor é obrigatório!';
       this.cd.detectChanges();
       return false;
     }
@@ -199,7 +191,6 @@ export class UsuarioCrud implements OnInit {
       return false;
     }
 
-    this.cpfInvalido = false;
     return true;
   }
 
@@ -207,8 +198,7 @@ export class UsuarioCrud implements OnInit {
     console.error('Erro ao salvar usuário:', err);
     
     if (err.status === 409) {
-      this.erro = 'CPF já cadastrado no sistema.';
-      this.cpfInvalido = true;
+      this.erro = 'Matrícula já cadastrada no sistema.';
     } else {
       this.erro = `Erro ao ${this.isEditMode ? 'atualizar' : 'cadastrar'} usuário.`;
     }

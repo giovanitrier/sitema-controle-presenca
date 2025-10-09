@@ -36,19 +36,19 @@ export class UsuarioService {
     return this.http.get<UsuarioListDTO[]>(this.backendApiUrl);
   }
 
-  // READ: Buscar um usuário por CPF
-  buscarPorCpf(cpf: string): Observable<Usuario> {
-    return this.http.get<Usuario>(`${this.backendApiUrl}/${cpf}`);
+  // READ: Buscar um usuário por Matrícula
+  buscarPorMatricula(matricula: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.backendApiUrl}/${matricula}`);
   }
 
   // UPDATE: Atualizar um usuário existente
-  atualizarUsuario(cpf: string, usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.backendApiUrl}/${cpf}`, usuario);
+  atualizarUsuario(matricula: string, usuario: Usuario): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.backendApiUrl}/${matricula}`, usuario);
   }
 
-  // DELETE: Deletar um usuário por CPF
-  deletarUsuario(cpf: string): Observable<void> {
-    return this.http.delete<void>(`${this.backendApiUrl}/${cpf}`);
+  // DELETE: Deletar um usuário por Matrícula
+  deletarUsuario(matricula: string): Observable<void> {
+    return this.http.delete<void>(`${this.backendApiUrl}/${matricula}`);
   }
 
   // Validação de biometria

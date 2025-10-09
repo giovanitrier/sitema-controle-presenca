@@ -23,7 +23,6 @@ export class TabelaUsuarios implements OnInit, OnDestroy {
   
   nomePesquisa: string = '';
   matriculaPesquisa: string = '';
-  cpfPesquisa: string = '';
   setorPesquisa: string = '';
   
   mensagem: string = '';
@@ -94,13 +93,6 @@ export class TabelaUsuarios implements OnInit, OnDestroy {
       );
     }
 
-    if (this.cpfPesquisa.trim()) {
-      const termo = this.cpfPesquisa.trim();
-      usuariosFiltrados = usuariosFiltrados.filter(usuario =>
-        usuario.cpf.includes(termo)
-      );
-    }
-
     if (this.setorPesquisa.trim()) {
       const termo = this.setorPesquisa.toLowerCase().trim();
       usuariosFiltrados = usuariosFiltrados.filter(usuario =>
@@ -109,9 +101,8 @@ export class TabelaUsuarios implements OnInit, OnDestroy {
     }
 
     this.usuariosFiltrados = usuariosFiltrados;
-    
-    this.filtroAtivo = !!(this.nomePesquisa.trim() || this.matriculaPesquisa.trim() || 
-                          this.cpfPesquisa.trim() || this.setorPesquisa.trim());
+
+    this.filtroAtivo = !!(this.nomePesquisa.trim() || this.matriculaPesquisa.trim() || this.setorPesquisa.trim());
   }
 
   pesquisarPorNome(): void {
@@ -133,7 +124,6 @@ export class TabelaUsuarios implements OnInit, OnDestroy {
   limparFiltros(): void {
     this.nomePesquisa = '';
     this.matriculaPesquisa = '';
-    this.cpfPesquisa = '';
     this.setorPesquisa = '';
     this.usuariosFiltrados = [...this.usuarios];
     this.filtroAtivo = false;
@@ -144,21 +134,21 @@ export class TabelaUsuarios implements OnInit, OnDestroy {
   // === AÇÕES INDIVIDUAIS ===
   visualizarUsuario(usuario: UsuarioListDTO): void {
     console.log('Visualizar:', usuario);
-    this.navegarParaRota('/detalhes-usuario', usuario.cpf);
+    this.navegarParaRota('/detalhes-usuario', usuario.matricula);
   }
 
   editarUsuario(usuario: UsuarioListDTO): void {
     console.log('Editando usuário:', usuario);
-    this.navegarParaRota('/editar-usuario', usuario.cpf);
+    this.navegarParaRota('/editar-usuario', usuario.matricula);
   }
 
   removerUsuario(usuario: UsuarioListDTO): void {
     if (confirm(`Tem certeza que deseja remover o usuário "${usuario.nome}" (${usuario.matricula})? Esta ação não pode ser desfeita.`)) {
       this.isLoading = true;
-      
-      this.usuarioService.deletarUsuario(usuario.cpf).subscribe({
+
+      this.usuarioService.deletarUsuario(usuario.matricula).subscribe({
         next: () => {
-          this.usuarios = this.usuarios.filter(u => u.cpf !== usuario.cpf);
+          this.usuarios = this.usuarios.filter(u => u.matricula !== usuario.matricula);
           this.usuariosFiltrados = [...this.usuarios];
           this.mensagem = `Usuário "${usuario.nome}" removido com sucesso.`;
           this.isLoading = false;
