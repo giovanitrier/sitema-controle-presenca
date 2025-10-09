@@ -21,15 +21,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // Métodos CRUD
     @Override
     public Usuario salvarUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Optional<Usuario> buscarPorCpf(String cpf) {
-        return usuarioRepository.findById(cpf);
+    public Optional<Usuario> buscarPorMatricula(String matricula) {
+        return usuarioRepository.findById(matricula);
     }
 
     @Override
@@ -38,11 +37,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void deletarUsuario(String cpf) {
-        usuarioRepository.deleteById(cpf);
+    public void deletarUsuario(String matricula) {
+        usuarioRepository.deleteById(matricula);
     }
 
-    // Métodos para listagem e validação
     @Override
     public List<UsuarioListDTO> listarUsuarios() {
         return usuarioRepository.findAll().stream()
@@ -69,20 +67,18 @@ public class UsuarioServiceImpl implements UsuarioService {
         return Optional.empty();
     }
 
-    // Métodos de conversão DTO
     private UsuarioListDTO converterParaUsuarioListDTO(Usuario usuario) {
         UsuarioListDTO dto = new UsuarioListDTO();
-        dto.setCpf(usuario.getCpf());
-        dto.setNome(usuario.getNome());
         dto.setMatricula(usuario.getMatricula());
+        dto.setNome(usuario.getNome());
         dto.setSetor(usuario.getSetor());
-        dto.setDataNascimento(usuario.getDataNascimento());
+        dto.setEmail(usuario.getEmail());
         return dto;
     }
 
     private UsuarioTemplateDTO converterParaUsuarioTemplateDTO(Usuario usuario) {
         UsuarioTemplateDTO dto = new UsuarioTemplateDTO();
-        dto.setId(usuario.getCpf());
+        dto.setId(usuario.getMatricula());
         dto.setTemplate(usuario.getTemplate());
         return dto;
     }

@@ -8,14 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioService {
-
-    // Métodos CRUD
     Usuario salvarUsuario(Usuario usuario);
-    Optional<Usuario> buscarPorCpf(String cpf);
+    Optional<Usuario> buscarPorMatricula(String matricula);
     List<Usuario> buscarTodos();
-    void deletarUsuario(String cpf);
-
-    // Métodos para listagem e validação
+    void deletarUsuario(String matricula);
     List<UsuarioListDTO> listarUsuarios();
     List<UsuarioTemplateDTO> listarTemplatesParaValidacao();
     Optional<Usuario> validarBiometria(byte[] hashParaValidar);

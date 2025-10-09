@@ -25,14 +25,9 @@ public class CertificadoController {
     @Autowired
     private CertificadoService certificadoService;
 
-    // 🔧 REMOVER - não é mais necessário pois usamos o serviço
-    // @Autowired
-    // private CertificadoRepository certificadoRepository;
-
     @Autowired
     private EmailService emailService;
 
-    // 🔧 CORREÇÃO: Usar o nome correto do método
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> getCertificadoPDF(@PathVariable Long id, Authentication authentication) {
         String emailSuperusuario = authentication.getName();
@@ -48,7 +43,7 @@ public class CertificadoController {
             byte[] pdfBytes = certificadoService.gerarCertificadoPDF(certificado);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            String filename = "certificado_" + certificado.getCpfUsuario() + ".pdf";
+            String filename = "certificado_" + certificado.getMatriculaUsuario() + ".pdf";
             headers.setContentDispositionFormData(filename, filename);
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
         } catch (IOException | DocumentException e) {
@@ -56,14 +51,12 @@ public class CertificadoController {
         }
     }
 
-    // 🔧 CORREÇÃO: Usar o nome correto do método
     @GetMapping("/meus-certificados")
     public List<CertificadoDTO> getMeusCertificados(Authentication authentication) {
         String emailSuperusuario = authentication.getName();
         return certificadoService.findBySuperusuarioEmailDTO(emailSuperusuario);
     }
 
-    // 🔧 CORREÇÃO: Usar o nome correto do método
     @GetMapping("/evento/{eventoId}")
     public ResponseEntity<List<CertificadoDTO>> getCertificadosPorEvento(@PathVariable Long eventoId, Authentication authentication) {
         String emailSuperusuario = authentication.getName();
@@ -87,7 +80,6 @@ public class CertificadoController {
                 return ResponseEntity.badRequest().body("Dados inválidos");
             }
 
-            // 🔧 CORREÇÃO: Usar o nome correto do método
             boolean permissoesValidas = certificadoService.verificarPermissoesCertificados(certificadoIds, emailSuperusuario);
             if (!permissoesValidas) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado a um ou mais certificados");
@@ -100,13 +92,12 @@ public class CertificadoController {
         }
     }
 
-    // 🔧 MANTER os métodos públicos (sem autenticação) para acesso externo
-    @GetMapping("/public/por-cpf/evento/{eventoId}/usuario/{cpf}")
-    public ResponseEntity<byte[]> getCertificadoPDFPorCpf(
-        @PathVariable String cpf,
+    @GetMapping("/public/por-matricula/evento/{eventoId}/usuario/{matricula}")
+    public ResponseEntity<byte[]> getCertificadoPDFPorMatricula(
+        @PathVariable String matricula,
         @PathVariable Long eventoId) {
 
-        Optional<Certificado> certificadoOptional = certificadoService.findByUsuarioCpfAndEventoEventoId(cpf, eventoId);
+        Optional<Certificado> certificadoOptional = certificadoService.findByUsuarioMatriculaAndEventoEventoId(matricula, eventoId);
         
         if (certificadoOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -118,7 +109,7 @@ public class CertificadoController {
             byte[] pdfBytes = certificadoService.gerarCertificadoPDF(certificado);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            String filename = "certificado_" + cpf + ".pdf";
+            String filename = "certificado_" + matricula + ".pdf";
             headers.setContentDispositionFormData(filename, filename);
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
         } catch (IOException | DocumentException e) {

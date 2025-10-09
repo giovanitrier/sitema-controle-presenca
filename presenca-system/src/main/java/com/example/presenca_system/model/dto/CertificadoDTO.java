@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class CertificadoDTO {
     private Long id;
     private String nomeUsuario;
-    private String cpfUsuario;
+    private String matriculaUsuario;
     private String nomeSuperusuario;
     private String codigoValidacao;
     private LocalDate dataEmissao;
@@ -21,17 +21,16 @@ public class CertificadoDTO {
     private String eventoTitulo;
     private Double eventoCargaHoraria;
 
-    // 🔥 CONSTRUTOR QUE RECEBE CERTIFICADO (usando métodos de conveniência)
     public CertificadoDTO(Certificado certificado) {
         this.id = certificado.getId();
-        this.nomeUsuario = certificado.getNomeUsuario();           // Método automático
-        this.cpfUsuario = certificado.getCpfUsuario();             // Método automático
-        this.nomeSuperusuario = certificado.getNomeSuperusuario(); // Método automático
+        this.nomeUsuario = certificado.getNomeUsuario();
+        this.matriculaUsuario = certificado.getMatriculaUsuario();
+        this.nomeSuperusuario = certificado.getNomeSuperusuario();
         this.codigoValidacao = certificado.getCodigoValidacao();
         this.dataEmissao = certificado.getDataEmissao();
         this.texto = certificado.getTexto();
         this.eventoId = certificado.getEvento().getEventoId();
-        this.eventoTitulo = certificado.getTituloEvento();         // Método automático
-        this.eventoCargaHoraria = certificado.getCargaHorariaEvento(); // Método automático
+        this.eventoTitulo = certificado.getTituloEvento();
+        this.eventoCargaHoraria = certificado.getCargaHorariaEvento();
     }
 }

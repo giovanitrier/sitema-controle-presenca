@@ -35,7 +35,6 @@ public class CertificadoServiceImpl implements CertificadoService {
     @Autowired
     private PDFService pdfService;
 
-    // 🔐 NOVOS MÉTODOS PARA VALIDAÇÃO POR SUPERUSUÁRIO
     @Override
     @Transactional(readOnly = true)
     public List<CertificadoDTO> findBySuperusuarioEmailDTO(String emailSuperusuario) {
@@ -60,13 +59,12 @@ public class CertificadoServiceImpl implements CertificadoService {
         for (Long certificadoId : certificadoIds) {
             Optional<Certificado> certificado = certificadoRepository.findByIdAndSuperusuarioEmail(certificadoId, emailSuperusuario);
             if (certificado.isEmpty()) {
-                return false; // Um dos certificados não pertence ao superusuário
+                return false;
             }
         }
-        return true; // Todos os certificados pertencem ao superusuário
+        return true;
     }
 
-    // MÉTODOS EXISTENTES (mantidos conforme seu código)
     @Override
     public void gerarCertificadosParaEvento(Evento evento) {
         System.out.println("Método gerarCertificadosParaEvento precisa ser implementado");
@@ -87,13 +85,12 @@ public class CertificadoServiceImpl implements CertificadoService {
     }
 
     @Override
-    public List<Certificado> buscarCertificadosPorCpf(String cpf) {
-        return certificadoRepository.findByUsuarioCpf(cpf);
+    public List<Certificado> buscarCertificadosPorMatricula(String matricula) {
+        return certificadoRepository.findByUsuarioMatricula(matricula);
     }
 
     @Override
     public List<byte[]> gerarPDFsPorIds(List<Long> certificadoIds) throws IOException, DocumentException {
-        // 🔧 CORREÇÃO: Use o método correto do JpaRepository
         List<Certificado> certificados = certificadoRepository.findAllById(certificadoIds);
         List<byte[]> pdfs = new ArrayList<>();
         
@@ -105,12 +102,12 @@ public class CertificadoServiceImpl implements CertificadoService {
     }
 
     @Override
-    public String buscarEmailPorCpf(String cpf) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(cpf);
+    public String buscarEmailPorMatricula(String matricula) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(matricula);
         if (usuarioOptional.isPresent()) {
             return usuarioOptional.get().getEmail();
         }
-        throw new RuntimeException("Usuário não encontrado com CPF: " + cpf);
+        throw new RuntimeException("Usuário não encontrado com matrícula: " + matricula);
     }
     
     @Override
@@ -121,8 +118,8 @@ public class CertificadoServiceImpl implements CertificadoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CertificadoDTO> findByUsuarioCpfDTO(String cpf) {
-        return certificadoRepository.findByUsuarioCpfDTO(cpf);
+    public List<CertificadoDTO> findByUsuarioMatriculaDTO(String matricula) {
+        return certificadoRepository.findByUsuarioMatriculaDTO(matricula);
     }
 
     @Override
@@ -161,14 +158,14 @@ public class CertificadoServiceImpl implements CertificadoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Certificado> findByUsuarioCpfAndEventoEventoId(String cpf, Long eventoId) {
-        return certificadoRepository.findByUsuarioCpfAndEventoEventoId(cpf, eventoId);
+    public Optional<Certificado> findByUsuarioMatriculaAndEventoEventoId(String matricula, Long eventoId) {
+        return certificadoRepository.findByUsuarioMatriculaAndEventoEventoId(matricula, eventoId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByUsuarioCpfAndEventoEventoId(String cpf, Long eventoId) {
-        return certificadoRepository.findByUsuarioCpfAndEventoEventoId(cpf, eventoId).isPresent();
+    public boolean existsByUsuarioMatriculaAndEventoEventoId(String matricula, Long eventoId) {
+        return certificadoRepository.findByUsuarioMatriculaAndEventoEventoId(matricula, eventoId).isPresent();
     }
 
     public Certificado criarCertificado(Usuario usuario, Evento evento, Superusuario superusuario) {
@@ -179,7 +176,6 @@ public class CertificadoServiceImpl implements CertificadoService {
         certificado.setCodigoValidacao(generateValidationCode());
         certificado.setDataEmissao(LocalDate.now());
         
-        // 🔥 TEXTO GERADO AUTOMATICAMENTE COM DADOS DOS RELACIONAMENTOS
         certificado.setTexto("Certificado de participação no evento \"" + evento.getTitulo() + 
                         "\" com carga horária de " + evento.getCargaHoraria() + " horas. " +
                         "Emitido por " + superusuario.getNome() + ".");

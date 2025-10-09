@@ -44,13 +44,11 @@ public class CheckInServiceImpl implements CheckInService {
         }
         Evento evento = eventoOpt.get();
 
-        // 🔥 VERIFICAÇÃO SIMPLIFICADA - apenas se já existe check-in
         Optional<CheckIn> checkInExistente = checkInRepository.findByUsuarioAndEvento(usuario, evento);
         if (checkInExistente.isPresent()) {
             return "Usuário já realizou o check-in para este evento.";
         }
 
-        // 🔥 CHECKIN SIMPLIFICADO - sem status
         CheckIn novoCheckIn = new CheckIn();
         novoCheckIn.setUsuario(usuario);
         novoCheckIn.setEvento(evento);
@@ -70,10 +68,9 @@ public class CheckInServiceImpl implements CheckInService {
             dto.setId(checkIn.getId());
             dto.setEventoId(checkIn.getEvento().getEventoId());
             dto.setEventoTitulo(checkIn.getEvento().getTitulo());
-            dto.setUsuarioCpf(checkIn.getUsuario().getCpf());
+            dto.setUsuarioMatricula(checkIn.getUsuario().getMatricula());
             dto.setUsuarioNome(checkIn.getUsuario().getNome());
             dto.setDataHoraCheckin(checkIn.getDataHoraCheckin());
-            // 🔥 STATUS REMOVIDO
             return dto;
         }).collect(Collectors.toList());
     }
@@ -87,7 +84,7 @@ public class CheckInServiceImpl implements CheckInService {
                 .map(checkin -> {
                     CheckInResponseDTO dto = new CheckInResponseDTO();
                     dto.setId(checkin.getId());
-                    dto.setUsuarioCpf(checkin.getUsuario().getCpf());
+                    dto.setUsuarioMatricula(checkin.getUsuario().getMatricula());
                     dto.setUsuarioNome(checkin.getUsuario().getNome());
                     dto.setDataHoraCheckin(checkin.getDataHoraCheckin());
                     dto.setEventoTitulo(checkin.getEvento().getTitulo());

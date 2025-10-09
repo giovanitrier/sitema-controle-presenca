@@ -23,18 +23,15 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    // 🔐 CREATE - Cadastrar novo usuário
     @PostMapping
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDto, Authentication authentication) {
-        String emailSuperusuario = authentication.getName();
+        authentication.getName();
         
         Usuario novoUsuario = new Usuario();
-        novoUsuario.setCpf(usuarioDto.getCpf());
-        novoUsuario.setNome(usuarioDto.getNome());
         novoUsuario.setMatricula(usuarioDto.getMatricula());
+        novoUsuario.setNome(usuarioDto.getNome());
         novoUsuario.setSetor(usuarioDto.getSetor());
         novoUsuario.setEmail(usuarioDto.getEmail());
-        novoUsuario.setDataNascimento(usuarioDto.getDataNascimento());
 
         try {
             byte[] biometriaBytes = Base64.getDecoder().decode(usuarioDto.getTemplate());
@@ -47,20 +44,18 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
     }
 
-    // 🔐 READ - Listar todos os usuários
     @GetMapping
     public ResponseEntity<List<UsuarioListDTO>> listarTodosOsUsuarios(Authentication authentication) {
-        String emailSuperusuario = authentication.getName();
+        authentication.getName();
         List<UsuarioListDTO> usuarios = usuarioService.listarUsuarios();
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
-    // 🔐 READ - Buscar usuário específico por CPF
-    @GetMapping("/{cpf}")
-    public ResponseEntity<Usuario> buscarUsuarioPorCpf(@PathVariable String cpf, Authentication authentication) {
-        String emailSuperusuario = authentication.getName();
+    @GetMapping("/{matricula}")
+    public ResponseEntity<Usuario> buscarUsuarioPorMatricula(@PathVariable String matricula, Authentication authentication) {
+        authentication.getName();
         
-        Optional<Usuario> usuarioOpt = usuarioService.buscarPorCpf(cpf);
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorMatricula(matricula);
         if (usuarioOpt.isPresent()) {
             return new ResponseEntity<>(usuarioOpt.get(), HttpStatus.OK);
         } else {
@@ -68,30 +63,25 @@ public class UsuarioController {
         }
     }
 
-    // 🔐 UPDATE - Atualizar usuário existente
-    @PutMapping("/{cpf}")
+    @PutMapping("/{matricula}")
     public ResponseEntity<Usuario> atualizarUsuario(
-            @PathVariable String cpf, 
+            @PathVariable String matricula, 
             @RequestBody UsuarioDTO usuarioDto, 
             Authentication authentication) {
         
-        String emailSuperusuario = authentication.getName();
+        authentication.getName();
         
-        Optional<Usuario> usuarioExistenteOpt = usuarioService.buscarPorCpf(cpf);
+        Optional<Usuario> usuarioExistenteOpt = usuarioService.buscarPorMatricula(matricula);
         if (usuarioExistenteOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         Usuario usuarioExistente = usuarioExistenteOpt.get();
         
-        // Atualiza os campos
         usuarioExistente.setNome(usuarioDto.getNome());
-        usuarioExistente.setMatricula(usuarioDto.getMatricula());
         usuarioExistente.setSetor(usuarioDto.getSetor());
         usuarioExistente.setEmail(usuarioDto.getEmail());
-        usuarioExistente.setDataNascimento(usuarioDto.getDataNascimento());
 
-        // Atualiza a biometria se fornecida
         if (usuarioDto.getTemplate() != null && !usuarioDto.getTemplate().isEmpty()) {
             try {
                 byte[] biometriaBytes = Base64.getDecoder().decode(usuarioDto.getTemplate());
@@ -105,17 +95,16 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioAtualizado, HttpStatus.OK);
     }
 
-    // 🔐 DELETE - Remover usuário
-    @DeleteMapping("/{cpf}")
-    public ResponseEntity<Void> removerUsuario(@PathVariable String cpf, Authentication authentication) {
-        String emailSuperusuario = authentication.getName();
+    @DeleteMapping("/{matricula}")
+    public ResponseEntity<Void> removerUsuario(@PathVariable String matricula, Authentication authentication) {
+        authentication.getName();
         
-        Optional<Usuario> usuarioOpt = usuarioService.buscarPorCpf(cpf);
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorMatricula(matricula);
         if (usuarioOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        usuarioService.deletarUsuario(cpf);
+        usuarioService.deletarUsuario(matricula);
         return ResponseEntity.noContent().build();
     }
 }

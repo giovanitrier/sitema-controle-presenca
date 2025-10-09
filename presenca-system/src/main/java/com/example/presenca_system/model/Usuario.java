@@ -2,8 +2,6 @@ package com.example.presenca_system.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -12,17 +10,15 @@ import java.util.List;
 public class Usuario {
     
     @Id
-    private String cpf;
+    private String matricula;
     
     @Column(nullable = false)
     private String nome;
-    
-    @Column(name = "data_nascimento")
-    private LocalDate dataNascimento;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
-    private String matricula;
+    
+    @Column(nullable = false)
     private String setor;
     
     @Column(nullable = false)
