@@ -4,7 +4,7 @@ atender as necessidades da multinacional American Axle &amp.
 
 ## Sobre o Projeto
 
-O Pontu é um software empresaria de controle de presença e gerenciamento de eventos. Ele permite a criação, atualização de dados de participação e assiduidade
+O Pontu é um software empresarial de controle de presença e gerenciamento de eventos. Ele permite a criação, atualização de dados de participação e assiduidade
 de funcionários em eventos internos, promovendo a maior integração corporativa e a participação ativa dos funcionários no aprendizado. Ele oferece suporte à leitura biométrica
 para a verificação da autenticidade e permite a geração e exportação de relatórios e certificados de participação.  
 
