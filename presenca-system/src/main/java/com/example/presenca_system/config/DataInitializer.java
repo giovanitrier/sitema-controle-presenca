@@ -41,11 +41,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         criarSuperusuarioPadrao();
-        //criarSuperusuariosAdicionais();
-        //criarUsuariosComuns();
         criarEventosParaAdmin();
-        //criarCheckInsParaEventosAdmin();
-        //criarCertificadosParaEventosFinalizados();
     }
 
     private void criarSuperusuarioPadrao() {
@@ -63,10 +59,10 @@ public class DataInitializer implements CommandLineRunner {
 
                 System.out.println("  Superusuário padrão criado com sucesso!");
             } else {
-                System.out.println("ℹ️  Superusuários já existem no sistema. Pulando criação padrão.");
+                System.out.println("  Superusuários já existem no sistema. Pulando criação padrão.");
             }
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar superusuário padrão: " + e.getMessage());
+            System.err.println(" Erro ao criar superusuário padrão: " + e.getMessage());
         }
     }
 
@@ -89,7 +85,7 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("  " + criados + " superusuários adicionais criados com sucesso!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar superusuários adicionais: " + e.getMessage());
+            System.err.println(" Erro ao criar superusuários adicionais: " + e.getMessage());
         }
     }
 
@@ -122,7 +118,7 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("  " + criados + " usuários comuns criados com sucesso!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar usuários comuns: " + e.getMessage());
+            System.err.println(" Erro ao criar usuários comuns: " + e.getMessage());
         }
     }
 
@@ -164,7 +160,7 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("  " + criados + " eventos criados para o admin com sucesso!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar eventos para admin: " + e.getMessage());
+            System.err.println(" Erro ao criar eventos para admin: " + e.getMessage());
         }
     }
 
@@ -193,7 +189,7 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("  Check-ins criados com sucesso para eventos do admin!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar check-ins para admin: " + e.getMessage());
+            System.err.println(" Erro ao criar check-ins para admin: " + e.getMessage());
         }
     }
 
@@ -212,14 +208,13 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("  Certificados criados com sucesso para eventos finalizados!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao criar certificados: " + e.getMessage());
+            System.err.println(" Erro ao criar certificados: " + e.getMessage());
         }
     }
 
 
     private Superusuario criarSuperusuario(String cpf, String nome, String email, String senha) {
         Superusuario superusuario = new Superusuario();
-        // superusuario.setCpf(cpf); // Removido
         superusuario.setNome(nome);
         superusuario.setEmail(email);
         superusuario.setSenha(senha);
@@ -234,9 +229,7 @@ public class DataInitializer implements CommandLineRunner {
         usuario.setEmail(email);
         usuario.setSetor(setor);
         usuario.setDataNascimento(dataNascimento);
-        // ===== ALTERADO DE .getBytes() PARA ATRIBUIÇÃO DIRETA =====
         usuario.setTemplate(template);
-        // ========================================================
         return usuario;
     }
 
@@ -279,7 +272,7 @@ public class DataInitializer implements CommandLineRunner {
                 }
             }
         } catch (Exception e) {
-            System.err.println("⚠️  Erro ao criar check-in para evento " + eventoId + ", usuário " + usuarioMatricula + ": " + e.getMessage());
+            System.err.println("  Erro ao criar check-in para evento " + eventoId + ", usuário " + usuarioMatricula + ": " + e.getMessage());
         }
     }
 
@@ -308,7 +301,7 @@ public class DataInitializer implements CommandLineRunner {
                 }
             }
         } catch (Exception e) {
-            System.err.println("⚠️  Erro ao criar certificado para usuário " + usuarioMatricula + ", evento " + eventoId + ": " + e.getMessage());
+            System.err.println("  Erro ao criar certificado para usuário " + usuarioMatricula + ", evento " + eventoId + ": " + e.getMessage());
         }
     }
 
