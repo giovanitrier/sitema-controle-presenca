@@ -15,7 +15,10 @@ import { CommonModule } from '@angular/common';
               <strong>&copy; {{ currentYear }} UFPR</strong> - Universidade Federal do Paraná
             </p>
             <p class="mb-0 text-muted">
-              Desenvolvido por Lucas, Aruni e Giovani
+              Desenvolvido por: <br>
+               Lucas Souza de Oliveira <br>
+               Aruni van Amstel <br>
+               Giovani Trierweiler
             </p>
           </div>
         </div>
