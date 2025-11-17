@@ -13,7 +13,7 @@ public class EventoDTO {
     private Date dataHora;
     private String categoria;
     private double cargaHoraria;
-    private StatusEvento status; // Use o enum diretamente
+    private StatusEvento status;  
 
     public EventoDTO() {}
 }

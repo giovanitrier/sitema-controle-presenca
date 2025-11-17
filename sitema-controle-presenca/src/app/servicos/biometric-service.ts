@@ -59,7 +59,7 @@ export interface JoinTemplatesResponse {
 }
 
 export interface TemplateWithId {
-  id: number; // <-- CORRIGIDO: A API espera um NÚMERO, não string.
+  id: number;
   template: string;
 }
 
@@ -212,15 +212,13 @@ export class BiometricService {
   // b) Comparar digital para check-in biométrico (MÉTODO ANTIGO, REMOVIDO NO SERVIÇO DE CHECK-IN)
   // Este método não deve ser usado para check-in
   compararDigitalCheckin(template: string, eventoId: number): Observable<any> {
-    // ... (Este método está obsoleto pois o check-in agora é por matrícula)
-    // Vamos manter por enquanto para não quebrar o biometric-service.ts
     const checkinRequest = {
       template: template,
       eventoId: eventoId
     };
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(
-      `${this.backendApiUrl}/checkin/biometrico`, // Este endpoint não existe mais no Java
+      `${this.backendApiUrl}/checkin/biometrico`,
       checkinRequest,
       { headers }
     ).pipe(

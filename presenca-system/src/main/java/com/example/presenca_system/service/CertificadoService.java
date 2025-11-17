@@ -39,7 +39,6 @@ public interface CertificadoService {
 
     List<Certificado> findByEventoEventoId(Long eventoId);
 
-    // Added the missing method declaration corresponding to the repository and implementation
     Optional<Certificado> findByUsuarioMatriculaAndEventoEventoId(String matricula, Long eventoId);
 
     boolean existsByUsuarioMatriculaAndEventoEventoId(String matricula, Long eventoId);

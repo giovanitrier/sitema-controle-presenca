@@ -137,22 +137,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Usuario> validarBiometria(byte[] hashParaValidar) {
-        // Este método está quebrado pois a entidade agora usa String.
-        // Como não está sendo usado por nenhum controller, vamos apenas logar um aviso.
-        // A implementação correta seria comparar strings.
         System.err.println("Atenção: validarBiometria(byte[]) não é mais suportado. Use string.");
         return Optional.empty(); 
-        
-        /* // Implementação correta se fosse string:
-        List<Usuario> todosUsuarios = usuarioRepository.findAll();
-        String hashString = Base64.getEncoder().encodeToString(hashParaValidar); // Exemplo
-        for (Usuario usuario : todosUsuarios) {
-            if (usuario.getTemplate() != null && usuario.getTemplate().equals(hashString)) {
-                return Optional.of(usuario);
-            }
-        }
-        return Optional.empty();
-        */
     }
 
     private UsuarioListDTO converterParaUsuarioListDTO(Usuario usuario) {

@@ -46,11 +46,6 @@ public class CheckInServiceImpl implements CheckInService {
             return "Evento não encontrado.";
         }
         Evento evento = eventoOpt.get();
-        
-        // 3. Verificar se o evento está em andamento (OPCIONAL, MAS RECOMENDADO)
-        // if (evento.getStatus() != StatusEvento.EM_ANDAMENTO) {
-        //     return "Check-in não pode ser realizado. Evento não está em andamento.";
-        // }
 
         // 4. Verificar se já existe check-in
         Optional<CheckIn> checkInExistente = checkInRepository.findByUsuarioAndEvento(usuario, evento);

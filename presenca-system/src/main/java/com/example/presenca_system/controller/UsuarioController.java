@@ -26,9 +26,9 @@ public class UsuarioController {
         try {
             Usuario usuarioSalvo = usuarioService.cadastrarNovoUsuario(usuarioDto);
             return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) { // <-- Específico (vem primeiro)
+        } catch (IllegalArgumentException e) {  
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (RuntimeException e) { // <-- Geral (vem por último)
+        } catch (RuntimeException e) {  
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
@@ -38,9 +38,9 @@ public class UsuarioController {
         try {
             Usuario usuarioAtualizado = usuarioService.atualizarUsuarioExistente(matricula, usuarioDto);
             return ResponseEntity.ok(usuarioAtualizado);
-        } catch (IllegalArgumentException e) { // <-- Erro específico (Base64) vem PRIMEIRO
+        } catch (IllegalArgumentException e) {  
             return ResponseEntity.badRequest().body("Template biométrico inválido.");
-        } catch (RuntimeException e) { // <-- Erro geral (Regra de negócio) vem DEPOIS
+        } catch (RuntimeException e) {  
             if (e.getMessage().contains("não encontrado")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }

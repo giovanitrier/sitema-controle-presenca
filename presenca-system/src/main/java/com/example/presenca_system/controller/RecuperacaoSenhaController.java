@@ -28,7 +28,6 @@ public class RecuperacaoSenhaController {
             recuperacaoSenhaService.solicitarRecuperacao(request);
             return ResponseEntity.ok("E-mail de recuperação enviado caso o endereço esteja cadastrado");
         } catch (Exception e) {
-            // Log do erro, mas retorna mesma mensagem por segurança
             System.err.println("Erro no processo de recuperação: " + e.getMessage());
             return ResponseEntity.ok("E-mail de recuperação enviado caso o endereço esteja cadastrado");
         }
