@@ -135,6 +135,7 @@
               </button>
               <button type="button" class="btn btn-success"
                       (click)="salvarUsuario()"
+
                       [disabled]="!usuarioForm.valid || !usuario.template || isLoading">
                 <i class="bi bi-person-plus me-1"></i> Cadastrar Usuário
               </button>

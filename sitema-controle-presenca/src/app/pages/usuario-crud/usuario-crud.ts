@@ -52,7 +52,7 @@ ngOnInit(): void {
   this.route.params.subscribe(params => {
     const matricula = params['matricula'];
     console.log('Matrícula da rota (subscribe):', matricula);
-    
+
     if (matricula) {
       this.isEditMode = true;
       this.usuario.matricula = matricula;
@@ -66,19 +66,19 @@ ngOnInit(): void {
 
 private formatarDataParaInput(data: string | Date): string {
   if (!data) return '';
-  
+
   try {
     const date = new Date(data);
-    
+
     // Verifica se a data é válida
     if (isNaN(date.getTime())) {
       return data.toString();
     }
-    
+
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
-    
+
     return `${year}-${month}-${day}`;
   } catch (error) {
     console.error('Erro ao formatar data:', error);
@@ -89,14 +89,14 @@ private formatarDataParaInput(data: string | Date): string {
 carregarUsuario(matricula: string): void {
   this.isLoading = true;
   console.log('Iniciando carregamento do usuário:', matricula);
-  
+
   this.usuarioService.buscarPorMatricula(matricula).subscribe({
     next: (data) => {
       console.log('Dados recebidos com sucesso:', data);
-      
+
       // Formata a data para o input type="date"
       const dataNascimentoFormatada = this.formatarDataParaInput(data.dataNascimento);
-      
+
       this.usuario = {
         nome: data.nome || '',
         matricula: data.matricula || matricula,
@@ -105,14 +105,14 @@ carregarUsuario(matricula: string): void {
         template: data.template || '',
         dataNascimento: dataNascimentoFormatada
       };
-      
+
       console.log('Usuário carregado:', this.usuario);
       this.isLoading = false;
       this.cd.detectChanges();
     },
     error: (err) => {
       console.error('Erro completo ao buscar usuário:', err);
-      
+
       // Tenta extrair mais informações do erro
       if (err.error && typeof err.error === 'string') {
         try {
@@ -122,11 +122,11 @@ carregarUsuario(matricula: string): void {
           console.log('Erro como string:', err.error);
         }
       }
-      
+
       this.erro = 'Erro ao carregar usuário: ' + (err.message || 'Erro desconhecido');
       this.isLoading = false;
       this.cd.detectChanges();
-      
+
       // Não navega automaticamente, permite que o usuário tente novamente
       // setTimeout(() => this.navegarParaLista(), 3000);
     }
@@ -206,11 +206,11 @@ carregarUsuario(matricula: string): void {
         this.isCapturingBiometry = false;
 
         if (response.success && response.template) {
-          
+
           const templateString = response.template as string;
 
-          this.usuario.template = templateString; 
-          
+          this.usuario.template = templateString;
+
           this.mensagem = 'Biometria capturada com sucesso!';
           this.erro = '';
           this.cd.detectChanges();

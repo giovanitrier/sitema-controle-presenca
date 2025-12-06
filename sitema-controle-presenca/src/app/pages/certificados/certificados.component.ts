@@ -21,7 +21,7 @@ export class CertificadosComponent implements OnInit, OnDestroy {
   certificadosSelecionados: Certificado[] = [];
 
   matriculaPesquisa: string = '';
-  eventoPesquisa: string = '';
+  eventoIdPesquisa: string = '';
   filtroAtivo: 'todos' | 'usuario' | 'evento' = 'todos';
 
   carregando: boolean = false;
@@ -74,90 +74,55 @@ export class CertificadosComponent implements OnInit, OnDestroy {
   }
 
   pesquisarPorUsuario(): void {
-  if (!this.matriculaPesquisa.trim()) {
-    this.certificadosFiltrados = this.certificados;
-    this.filtroAtivo = 'todos';
-    return;
-  }
-
-  this.carregando = true;
-  
-  // Filtro local - busca por matrícula OU nome do usuário
-  const termoPesquisa = this.matriculaPesquisa.toLowerCase().trim();
-  
-  this.certificadosFiltrados = this.certificados.filter(certificado => {
-    // Busca por matrícula (busca exata ou parcial)
-    const matriculaMatch = certificado.matriculaUsuario?.toLowerCase().includes(termoPesquisa);
-    
-    // Busca por nome do usuário
-    const nomeMatch = certificado.nomeUsuario?.toLowerCase().includes(termoPesquisa);
-
-    return matriculaMatch || nomeMatch;
-  });
-
-  this.filtroAtivo = 'usuario';
-  this.carregando = false;
-  
-  if (this.certificadosFiltrados.length === 0) {
-    this.erro = 'Nenhum certificado encontrado para: "' + this.matriculaPesquisa + '"';
-  } else {
-    this.erro = '';
-    this.mensagem = `Encontrados ${this.certificadosFiltrados.length} certificado(s)`;
-    setTimeout(() => this.mensagem = '', 3000);
-  }
-  
-  this.cd.detectChanges();
-}
-
-   pesquisarPorEvento(): void {
-    if (!this.eventoPesquisa.trim()) {
+    if (!this.matriculaPesquisa) {
       this.certificadosFiltrados = this.certificados;
       this.filtroAtivo = 'todos';
       return;
     }
 
     this.carregando = true;
-    
-    // Filtro local - busca por título, categoria ou data do evento
-    const termoPesquisa = this.eventoPesquisa.toLowerCase().trim();
-    
-    this.certificadosFiltrados = this.certificados.filter(certificado => {
-      // Verifica se o certificado tem informações do evento
-      if (!certificado.eventoTitulo) {
-        return false;
+    this.certificadoService.getCertificadosPorMatricula(this.matriculaPesquisa).subscribe({
+      next: (data) => {
+        this.certificadosFiltrados = data;
+        this.filtroAtivo = 'usuario';
+        this.carregando = false;
+        this.erro = '';
+        this.cd.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erro na pesquisa por usuário:', error);
+        this.erro = 'Usuário não encontrado ou sem certificados';
+        this.carregando = false;
+        this.certificadosFiltrados = [];
+        this.cd.detectChanges();
       }
-
-      // Busca no título do evento
-      const tituloMatch = certificado.eventoTitulo?.toLowerCase().includes(termoPesquisa);
-      
-      // Busca na data do evento (formato brasileiro)
-      const dataEvento = certificado.dataEmissao ? new Date(certificado.dataEmissao) : null;
-      const dataMatch = dataEvento ? 
-        dataEvento.toLocaleDateString('pt-BR').includes(termoPesquisa) : false;
-      
-      // Busca na data formatada (alternativa)
-      const dataFormatadaMatch = dataEvento ?
-        dataEvento.toLocaleDateString('pt-BR', { 
-          day: 'numeric', 
-          month: 'numeric', 
-          year: 'numeric' 
-        }).includes(termoPesquisa) : false;
-
-      return tituloMatch || dataMatch || dataFormatadaMatch;
     });
+  }
 
-    this.filtroAtivo = 'evento';
-    this.carregando = false;
-    
-    if (this.certificadosFiltrados.length === 0) {
-      this.erro = 'Nenhum certificado encontrado para o critério de pesquisa';
-    } else {
-      this.erro = '';
-      this.mensagem = `Encontrados ${this.certificadosFiltrados.length} certificado(s)`;
-      setTimeout(() => this.mensagem = '', 3000);
+  pesquisarPorEvento(): void {
+    if (!this.eventoIdPesquisa) {
+      this.certificadosFiltrados = this.certificados;
+      this.filtroAtivo = 'todos';
+      return;
     }
-    
-    this.cd.detectChanges();
+
+    this.carregando = true;
+    this.certificadoService.getCertificadosPorEvento(Number(this.eventoIdPesquisa)).subscribe({
+      next: (data) => {
+        this.certificadosFiltrados = data;
+        this.filtroAtivo = 'evento';
+        this.carregando = false;
+        this.erro = '';
+        this.cd.detectChanges();
+      },
+      error: (error) => {
+        console.error('Erro na pesquisa por evento:', error);
+        this.erro = 'Evento não encontrado ou sem certificados';
+        this.carregando = false;
+        this.certificadosFiltrados = [];
+        this.cd.detectChanges();
+      }
+    });
   }
 
   toggleSelecionar(certificado: Certificado): void {
@@ -230,38 +195,59 @@ export class CertificadosComponent implements OnInit, OnDestroy {
   }
 
   baixarTodosEvento(): void {
-    if (this.filtroAtivo === 'evento' && this.eventoPesquisa) {
-      // Como agora é um filtro local, precisamos baixar individualmente os certificados filtrados
-      const ids = this.certificadosFiltrados.map(c => c.id);
-      
-      if (ids.length === 0) {
-        this.erro = 'Nenhum certificado para baixar';
-        setTimeout(() => this.erro = '', 3000);
-        this.cd.detectChanges();
-        return;
-      }
-
-      // Baixa cada certificado individualmente
-      ids.forEach(id => {
-        this.certificadoService.downloadCertificadoPdf(id).subscribe({
-          next: (blob) => {
-            saveAs(blob, `certificado_${id}.pdf`);
-          },
-          error: (error) => {
-            console.error('Erro ao baixar certificado:', error);
-          }
-        });
+    if (this.filtroAtivo === 'evento' && this.eventoIdPesquisa) {
+      this.certificadoService.downloadCertificadosEventoPdf(Number(this.eventoIdPesquisa)).subscribe({
+        next: (blob) => {
+          saveAs(blob, `certificados_evento_${this.eventoIdPesquisa}.pdf`);
+          this.mensagem = 'Todos os certificados do evento baixados!';
+          setTimeout(() => this.mensagem = '', 3000);
+          this.cd.detectChanges();
+        },
+        error: (error) => {
+          console.error('Erro ao baixar certificados do evento:', error);
+          this.erro = 'Erro ao baixar certificados do evento';
+          setTimeout(() => this.erro = '', 3000);
+          this.cd.detectChanges();
+        }
       });
+    }
+  }
 
-      this.mensagem = `Iniciando download de ${ids.length} certificado(s)...`;
-      setTimeout(() => this.mensagem = '', 3000);
+  enviarPorEmail(): void {
+    const ids = this.certificadosSelecionados.map(c => c.id);
+
+    if (ids.length === 0) {
+      this.erro = 'Selecione pelo menos um certificado';
+      setTimeout(() => this.erro = '', 3000);
       this.cd.detectChanges();
+      return;
+    }
+
+    const email = prompt('Digite o email para envio:');
+
+    if (email && ids.length > 0) {
+      this.certificadoService.enviarCertificadosPorEmail(ids, email).subscribe({
+        next: () => {
+        this.mensagem = 'Certificados enviados com sucesso!';
+        this.erro = '';
+        setTimeout(() => {
+          this.mensagem = '';
+          this.cd.detectChanges();
+        }, 3000);
+        },
+        error: (error) => {
+          console.error('Erro ao enviar email:', error);
+          this.erro = 'Erro ao enviar email';
+          setTimeout(() => this.erro = '', 3000);
+          this.cd.detectChanges();
+        }
+      });
     }
   }
 
   limparFiltros(): void {
     this.matriculaPesquisa = '';
-    this.eventoPesquisa = ''; // ← Atualizei para o novo nome
+    this.eventoIdPesquisa = '';
     this.carregarTodosCertificados();
     this.erro = '';
     this.mensagem = '';
@@ -270,19 +256,5 @@ export class CertificadosComponent implements OnInit, OnDestroy {
 
   formatarData(data: string): string {
     return new Date(data).toLocaleDateString('pt-BR');
-  }
-
-  // Método auxiliar para formatar a data do evento para exibição
-  formatarDataEvento(dataHora: string): string {
-    if (!dataHora) return 'Data não informada';
-    
-    const data = new Date(dataHora);
-    return data.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   }
 }
