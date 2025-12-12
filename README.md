@@ -1,6 +1,6 @@
 ## Sistema de Controle de Presença - Pontu
 Projeto de trabalho de conclusão de curso para o curso de Tecnologia em Análise e Desenvolvimento de Sistemas da Universidade Federal do Paraná, desenvolvido para
-atender as necessidades da multinacional American Axle &amp.
+atender as necessidades da multinacional American Axle & Manufacturing.
 
 ## Sobre o Projeto
 
