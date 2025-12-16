@@ -29,28 +29,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                // Rotas públicas
-                .requestMatchers("/auth/**", "/public/**", "/checkin/registrar").permitAll() 
-                // Rotas autenticadas
-                .requestMatchers("/admin/**", "/checkin/evento/**").authenticated() 
-                // Nega todo o resto
-                .anyRequest().denyAll() 
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
 
-    return http.build();
-}
+                        .requestMatchers("/admin/certificados/enviar-email").permitAll()
+                        .requestMatchers("/auth/**", "/public/**", "/checkin/registrar").permitAll()
+                        .requestMatchers("/admin/**", "/checkin/evento/**").authenticated()
+
+                        .anyRequest().denyAll())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        // Allow common localhost ports used during development / docker
+        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:4300", "http://localhost:8080"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));

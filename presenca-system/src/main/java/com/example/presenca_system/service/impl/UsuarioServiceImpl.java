@@ -28,8 +28,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final CertificadoRepository certificadoRepository;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
-                              CheckInRepository checkInRepository,
-                              CertificadoRepository certificadoRepository) {
+            CheckInRepository checkInRepository,
+            CertificadoRepository certificadoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.checkInRepository = checkInRepository;
         this.certificadoRepository = certificadoRepository;
@@ -50,14 +50,15 @@ public class UsuarioServiceImpl implements UsuarioService {
         novoUsuario.setNome(usuarioDto.getNome());
         novoUsuario.setEmail(usuarioDto.getEmail());
         novoUsuario.setSetor(usuarioDto.getSetor());
-        novoUsuario.setDataNascimento(usuarioDto.getDataNascimento() != null ?
-        usuarioDto.getDataNascimento().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null);
+        novoUsuario.setDataNascimento(usuarioDto.getDataNascimento() != null
+                ? usuarioDto.getDataNascimento().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+                : null);
 
         if (usuarioDto.getTemplate() == null || usuarioDto.getTemplate().isEmpty()) {
-             throw new IllegalArgumentException("Template biométrico não pode ser nulo.");
+            throw new IllegalArgumentException("Template biométrico não pode ser nulo.");
         }
         novoUsuario.setTemplate(usuarioDto.getTemplate());
-     
+
         return usuarioRepository.save(novoUsuario);
     }
 
@@ -70,13 +71,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioExistente.setNome(usuarioDto.getNome());
         usuarioExistente.setEmail(usuarioDto.getEmail());
         usuarioExistente.setSetor(usuarioDto.getSetor());
-        usuarioExistente.setDataNascimento(usuarioDto.getDataNascimento() != null ?
-        usuarioDto.getDataNascimento().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null);
+        usuarioExistente.setDataNascimento(usuarioDto.getDataNascimento() != null
+                ? usuarioDto.getDataNascimento().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+                : null);
 
         if (usuarioDto.getTemplate() != null && !usuarioDto.getTemplate().isEmpty()) {
             usuarioExistente.setTemplate(usuarioDto.getTemplate());
         }
-        
+
         return usuarioRepository.save(usuarioExistente);
     }
 
@@ -138,7 +140,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public Optional<Usuario> validarBiometria(byte[] hashParaValidar) {
         System.err.println("Atenção: validarBiometria(byte[]) não é mais suportado. Use string.");
-        return Optional.empty(); 
+        return Optional.empty();
     }
 
     private UsuarioListDTO converterParaUsuarioListDTO(Usuario usuario) {

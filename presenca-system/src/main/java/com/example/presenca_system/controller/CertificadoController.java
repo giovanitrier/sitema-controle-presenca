@@ -42,7 +42,8 @@ public class CertificadoController {
             byte[] pdfBytes = certificadoService.gerarCertificadoPDF(certificado);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            String filename = "certificado_" + certificado.getMatriculaUsuario() + ".pdf"; // Changed getCpfUsuario to getMatriculaUsuario
+            String filename = "certificado_" + certificado.getMatriculaUsuario() + ".pdf"; // Changed getCpfUsuario to
+                                                                                           // getMatriculaUsuario
             headers.setContentDispositionFormData(filename, filename);
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
         } catch (IOException | DocumentException e) {
@@ -56,7 +57,8 @@ public class CertificadoController {
     }
 
     @GetMapping("/evento/{eventoId}")
-    public ResponseEntity<List<CertificadoDTO>> getCertificadosPorEvento(@PathVariable Long eventoId, Authentication authentication) {
+    public ResponseEntity<List<CertificadoDTO>> getCertificadosPorEvento(@PathVariable Long eventoId,
+            Authentication authentication) {
         try {
             List<CertificadoDTO> certificados = certificadoService.findByEventoEventoIdDTO(eventoId);
             return ResponseEntity.ok(certificados);
@@ -67,10 +69,11 @@ public class CertificadoController {
 
     @GetMapping("/public/por-matricula/evento/{eventoId}/usuario/{matricula}")
     public ResponseEntity<byte[]> getCertificadoPDFPorMatricula(
-        @PathVariable String matricula,
-        @PathVariable Long eventoId) {
+            @PathVariable String matricula,
+            @PathVariable Long eventoId) {
 
-        Optional<Certificado> certificadoOptional = certificadoService.findByUsuarioMatriculaAndEventoEventoId(matricula, eventoId);
+        Optional<Certificado> certificadoOptional = certificadoService
+                .findByUsuarioMatriculaAndEventoEventoId(matricula, eventoId);
 
         if (certificadoOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -87,6 +90,26 @@ public class CertificadoController {
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
         } catch (IOException | DocumentException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/enviar-email")
+    public ResponseEntity<Map<String, String>> enviarCertificadosPorEmail(
+            @RequestBody Map<String, Object> request,
+            Authentication authentication) {
+        try {
+            @SuppressWarnings("unchecked")
+            List<Long> certificadoIds = (List<Long>) request.get("certificadoIds");
+            String emailDestinatario = (String) request.get("email");
+
+            emailService.enviarCertificadosPorEmail(certificadoIds, emailDestinatario);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "Certificados enviados com sucesso para: " + emailDestinatario));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Erro: " + e.getMessage()));
         }
     }
 }

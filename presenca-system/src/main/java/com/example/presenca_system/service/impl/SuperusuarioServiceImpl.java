@@ -17,13 +17,14 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public SuperusuarioServiceImpl(SuperusuarioRepository superusuarioRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public SuperusuarioServiceImpl(SuperusuarioRepository superusuarioRepository, PasswordEncoder passwordEncoder,
+            JwtService jwtService) {
         this.superusuarioRepository = superusuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
-    //   MÉTODOS PARA VALIDAÇÃO DE PERMISSÕES
+    // MÉTODOS PARA VALIDAÇÃO DE PERMISSÕES
     @Override
     public Superusuario cadastrarSuperusuario(Superusuario superusuario, String emailSuperusuarioAutenticado) {
         // Verificar se o superusuário autenticado tem permissão para criar outros
@@ -31,23 +32,29 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
         if (autenticado.isEmpty()) {
             throw new RuntimeException("Superusuário autenticado não encontrado");
         }
-        
+
         return cadastrarSuperusuario(superusuario);
     }
 
     @Override
-    public Superusuario alterarSuperusuario(String matricula, Superusuario superusuarioAtualizado, String emailSuperusuarioAutenticado) {
+    public Superusuario alterarSuperusuario(String matricula, Superusuario superusuarioAtualizado,
+            String emailSuperusuarioAutenticado) {
         // Verificar permissões
         Optional<Superusuario> autenticado = superusuarioRepository.findByEmail(emailSuperusuarioAutenticado);
         if (autenticado.isEmpty()) {
             throw new RuntimeException("Superusuário autenticado não encontrado");
         }
-        
-        // Impedir que um superusuário altere seus próprios dados sem verificação adicional
-        if (autenticado.get().getMatricula().equals(matricula)) {
-            throw new RuntimeException("Não é permitido alterar o próprio usuário por esta operação");
-        }
-        
+
+        // Impedir que um superusuário altere seus próprios dados sem verificação
+        // adicional
+        /*
+         * if (autenticado.get().getMatricula().equals(matricula)) {
+         * throw new
+         * RuntimeException("Não é permitido alterar o próprio usuário por esta operação"
+         * );
+         * }
+         */
+
         return alterarSuperusuario(matricula, superusuarioAtualizado);
     }
 
@@ -58,12 +65,12 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
         if (autenticado.isEmpty()) {
             throw new RuntimeException("Superusuário autenticado não encontrado");
         }
-        
+
         // Impedir auto-exclusão
         if (autenticado.get().getMatricula().equals(matricula)) {
             throw new RuntimeException("Não é permitido excluir o próprio usuário");
         }
-        
+
         excluirSuperusuario(matricula);
     }
 
@@ -74,7 +81,7 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
         if (autenticado.isEmpty()) {
             throw new RuntimeException("Superusuário autenticado não encontrado");
         }
-        
+
         return listarTodos();
     }
 
@@ -100,7 +107,7 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
                 .map(superusuarioExistente -> {
                     superusuarioExistente.setEmail(superusuarioAtualizado.getEmail());
                     superusuarioExistente.setNome(superusuarioAtualizado.getNome());
-                    
+
                     if (superusuarioAtualizado.getSenha() != null && !superusuarioAtualizado.getSenha().isEmpty()) {
                         superusuarioExistente.setSenha(passwordEncoder.encode(superusuarioAtualizado.getSenha()));
                     }
@@ -113,7 +120,7 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
     public void excluirSuperusuario(String matricula) {
         superusuarioRepository.deleteById(matricula);
     }
-    
+
     @Override
     public List<Superusuario> listarTodos() {
         return superusuarioRepository.findAll();
@@ -147,16 +154,16 @@ public class SuperusuarioServiceImpl implements SuperusuarioService {
         if (superusuario.getEmail() == null || superusuario.getSenha() == null || superusuario.getMatricula() == null) {
             throw new RuntimeException("Matrícula, Email e senha são obrigatórios");
         }
-        
+
         // Verifica se já existe um usuário com este email
         if (superusuarioRepository.findByEmail(superusuario.getEmail()).isPresent()) {
             throw new RuntimeException("Já existe um usuário com este email");
         }
-        
+
         // Criptografa a senha
         String senhaCriptografada = passwordEncoder.encode(superusuario.getSenha());
         superusuario.setSenha(senhaCriptografada);
-        
+
         // Salva o superusuário
         return superusuarioRepository.save(superusuario);
     }
