@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # --- Banco de Dados PostgreSQL ---
   db:
     image: postgres:15-alpine
     container_name: presenca_db
@@ -14,31 +13,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # --- Backend (Spring Boot) ---
   backend:
     build:
-      context: ./presenca-system  # Pasta do backend
+      context: ./presenca-system
     container_name: presenca_backend
+    ports:
+      - "8443:8443"
     environment:
-      # Aponta o backend para o contentor do banco 'db'
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sistema_presenca
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      # URL para os emails de recuperação de senha (agora no Nginx)
       - APP_FRONTEND_URL=http://localhost:8080
-      # Configuração do MailHog
       - SPRING_MAIL_HOST=mailhog
       - SPRING_MAIL_PORT=1025
     depends_on:
       - db
       - mailhog
 
-  # --- Frontend (Angular + Nginx) ---
   frontend:
     build:
-      context: ./sitema-controle-presenca # Pasta do frontend
+      context: ./sitema-controle-presenca
     container_name: presenca_frontend
     ports:
       - "8080:80"
@@ -47,14 +42,12 @@ services:
     depends_on:
       - backend
 
-  # --- MailHog (captura emails) ---
   mailhog:
     image: mailhog/mailhog
     container_name: presenca_mailhog
     ports:
-      - "8025:8025" # UI web
-      - "1025:1025" # SMTP
+      - "8025:8025"
+      - "1025:1025"
 
-# Volume para persistir os dados do banco
 volumes:
   postgres_data:
